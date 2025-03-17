@@ -1,13 +1,17 @@
 #ifndef GRAPH_GRAPH_HPP_
 #define GRAPH_GRAPH_HPP_
 
+#include <climits>
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <queue>
 #include <stack>
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -24,7 +28,7 @@
  * initialization
  * @tparam T the type of the nodes in the graph
  */
-template <typename T> class Graph {
+template <typename T> class weight_graph {
 public:
   /**
    * @brief Constructor to initialize the graph with a specific type
@@ -35,7 +39,7 @@ public:
    * @param __type string specifying the type of the graph ("directed" or
    * "undirected")
    */
-  Graph(std::string __type) {
+  weight_graph(std::string __type) {
     try {
       if (__type == "directed" || __type == "undirected") {
         this->__type = __type;
@@ -53,7 +57,7 @@ public:
    *
    * clears the adjacency list to free memory
    */
-  ~Graph() { adj.clear(); }
+  ~weight_graph() { adj.clear(); }
 
   /**
    * @brief add an edge between to nodes with a given weight
@@ -144,6 +148,56 @@ public:
     return path;
   }
 
+  /**
+   * @brief find the shortest path between two nodes in weight graph using
+   * djikstra algorithm
+   *
+   * this function implements djikstra algorithm to compute the shortest path
+   * from a start node to an end node in a graph represented by an adjacency
+   * list. The graph is assumed to have non-negative edge weights
+   *
+   * @tparam T type of the nodes in the graphs
+   * @param start the starting node for the shorterts path search
+   * @param end the target node for the shorthest path search
+   * @return int64_t shortest path distance from the start node to the end node.
+   * if not path exist the function return -1
+   */
+  int64_t shortest_path(T start, T end) {
+    // initialize map to store distance from the start node to each node
+    // initially, all distance are set to infinity (INT_MAX), execpt for the start node
+    std::unordered_map<T, int64_t> dist;
+    for (auto &x : __elements) { // iterate all node in the graph
+      dist[x] = INT_MAX; // set initial distance to the `infinity`
+    }
+    // priority queue to processing node in order of their current shortest distance
+    // queue store pairs of (distance and node), sorted by smallest distance first
+    std::priority_queue<std::pair<int64_t, T>,
+                        std::vector<std::pair<int64_t, T>>,
+                        std::greater<std::pair<int64_t, T>>>
+        pq;
+    // push the start node into the priority queue with distance of 0
+    pq.push_back(std::make_pair(0, start));
+    dist[start] = 0; // distance to the start node is 0
+
+    // process node until the priority empty
+    while (!pq.empty()) {
+      // extract node with the smallest current distance from the priority queue
+      T currentNode = pq.top().second; // node will process
+      T currentDist = pq.top().first; // current shortest distance to this node
+      pq.pop();
+
+      // iterating over the outgoing edeg of the current node
+      for (std::pair<T, int64_t> &edge : adj[currentNode]) {
+        if (currentDist + edge.second < dist[edge.first]) {
+          dist[edge.first] = currentDist + edge.second;
+          pq.push(std::make_tuple(dist[edge.first], edge.first));
+        }
+      }
+    }
+    // return the shorthest path distance the end node, or -1 if path no exists
+    return (dist[end] != INT_MAX) ? dist[end] : -1;
+  }
+
 private:
   /**
    * @brief adjacency list representation of the graph
@@ -156,6 +210,10 @@ private:
    * @brief type of the graph ("directed" or "undirected")
    */
   std::string __type;
+  /**
+* @brief representing the set of all element nodes in the graph
+*/
+  std::unordered_set<T> __elements;
 };
 
 #endif // ! GRAPH_GRAPH_HPP_

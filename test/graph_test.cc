@@ -2,27 +2,42 @@
 #include <gtest/gtest.h>
 
 TEST(GraphTest, Constructor) {
-  Graph<int> graph("directed");
-  EXPECT_NO_THROW(Graph<int>("directed"));
-  EXPECT_NO_THROW(Graph<int>("undirected"));
+  EXPECT_NO_THROW(weight_graph<int> directed("directed"));
+  EXPECT_NO_THROW(weight_graph<int> undirected("undirected"));
 }
 
-TEST(GraphTest, AddEdge) {
-  Graph<int> graph("undirected");
+TEST(GraphTest, AddEdgeDirected) {
+  weight_graph<int> graph("directed");
+
   graph.add_edge(1, 2, 10);
-  graph.add_edge(2, 3, 20);
+  graph.add_edge(2, 3, 30);
+  graph.add_edge(3, 4, 40);
 
-  EXPECT_EQ(graph.dfs(1).size(), 3);
+  std::vector<int> dfs_result = graph.dfs(1);
+  std::vector<int> expected = {1, 2, 3, 4};
+  EXPECT_EQ(dfs_result, expected);
 }
 
-TEST(GraphTest, DFSTraversal) {
-  Graph<int> graph("undirected");
+TEST(GraphTest, DFSTraversalDirected) {
+  weight_graph<int> graph("directed");
+
   graph.add_edge(1, 2, 10);
   graph.add_edge(2, 3, 20);
   graph.add_edge(3, 4, 30);
 
-  std::vector<int> expected_dfs = {1, 2, 3, 4};
-  std::vector<int> result_dfs = graph.dfs(1);
+  std::vector<int> result = graph.dfs(1);
+  std::vector<int> expected = {1, 2, 3, 4};
+  EXPECT_EQ(result, expected);
+}
 
-  EXPECT_EQ(result_dfs, expected_dfs);
+TEST(GraphTest, BFSTraversalDirected) {
+  weight_graph<int> graph("directed");
+
+  graph.add_edge(1, 2, 10);
+  graph.add_edge(2, 3, 20);
+  graph.add_edge(3, 4, 30);
+
+  std::vector<int> result = graph.bfs(1);
+  std::vector<int> expected = {1, 2, 3, 4};
+  EXPECT_EQ(result, expected);
 }
