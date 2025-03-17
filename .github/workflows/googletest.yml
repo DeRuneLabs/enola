@@ -13,6 +13,5 @@ jobs:
       - name: build and test
         run: |
           g++ --version
-          cd test
           chmod +x ./test/run_test
           ./test/run_test
