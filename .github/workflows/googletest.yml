@@ -15,3 +15,10 @@ jobs:
           g++ --version
           chmod +x ./test/run_test
           ./test/run_test
+
+      - name: running example
+        if: success()
+        run: |
+          cd build
+          ./example/graph_example
+          ./example/bintree_example
