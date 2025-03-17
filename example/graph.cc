@@ -1,11 +1,4 @@
-# enola
-library for perform some complex data structure algorithms
-
-## example use
-
-- graph
-```cpp
-#include <enola/graph/graph.hpp>
+#include "../enola/graph/graph.hpp"
 #include <iostream>
 
 int main() {
@@ -24,6 +17,5 @@ int main() {
   }
   std::cout << std::endl;
 
-  return 
+  return 0;
 }
-```
