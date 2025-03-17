@@ -29,26 +29,61 @@ else
   handle_error "not supporteed operating system"
 fi
 
-if [[ "$PACKAGE_MANAGER" == "apt-get" ]]; then
-  if !dpkg -l | grep libgtest-dev; then
-    sudo apt-get install libgtest-dev cmake
+install_googletest_libs() {
+  if [[ "$PACKAGE_MANAGER" == "apt-get" ]]; then
+    echo "INFO: check for libgtest-dev..."
+    if  ! dpkg -l | grep -q libgtest-dev; then
+      echo "INFO: installing libgtest-dev and cmake..."
+      sudo apt-get update || handle_error "failed to apt-get update"
+      sudo apt-get install -y libgtest-dev cmake || handle_error "failed to install libgtest-dev and cmake"
+    else
+      echo "INFO: libgtest-dev already installed"
+    fi
+  elif [[ "$PACKAGE_MANAGER" == "brew" ]]; then
+    echo "INFO: check google test..."
+    if ! brew list | grep -q googletest; then
+      echo "INFO installing google test..."
+      brew install googletest || handle_error "failed to install google test via home brew, manual installation be usefull"
+    else
+      echo "INFO: already installed"
+    fi
   fi
-fi
+}
 
-echo "intializing google test"
-if [ -d "$GOOGLETEST_FOLDER" ]; then
-  echo "already installed"
-else
-  git clone https://github.com/google/googletest.git -b release-1.12.1
-fi
+setup_googletest() {
+  if [ -d "$GOOGLETEST_FOLDER" ]; then
+    echo "INFO: google test folder '$GOOGLETEST_FOLDER' exists"
+  else
+    echo "clone google test repository"
+    git clone https://github.com/google/googletest.git -b release-1.12.1 || handle_error "failed to clone Google Test repository."
+  fi
+}
 
-if [ -d "build" ]; then
-  cd build
-else
-  mkdir build
-  cd build
-fi
+build_project() {
+  if [ -d "$BUILD_DIR" ]; then
+    echo "INFO: build directory '$BUILD_DIR' exist"
+  else
+    echo "INFO: create build directory..."
+    mkdir -p "$BUILD_DIR" || handle_error "failed to create build directory"
+  fi
+    
+  echo "INFO: build test and project..."
+  cd "$BUILD_DIR"
+  ls
+  cmake .. || handle_error "CMake configs failed"
+  make
+}
 
-cmake ..
-make
-./test/run_tests
+run_tests() {
+  echo "INFO: running test..."
+  if [ -f "./test/run_tests" ]; then
+    ./test/run_tests || handle_error "testing failed"
+  else
+    handle_error "test executable on './test/run_tests' not found!"
+  fi
+}
+
+install_googletest_libs
+setup_googletest
+build_project
+run_tests
