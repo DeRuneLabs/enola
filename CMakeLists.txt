@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 include_directories(enola/graph)
 include_directories(enola/tree)
+include_directories(enola/dsjoint_set)
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
