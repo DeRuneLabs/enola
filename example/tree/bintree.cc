@@ -1,4 +1,4 @@
-#include "../enola/tree/bintree.hpp"
+#include "../../enola/tree/bintree.hpp"
 #include <iostream>
 
 int main() {
