@@ -1,7 +1,12 @@
 #include "../enola/graph/graph.hpp"
 #include <gtest/gtest.h>
 
-TEST(GraphTest, Constructor) {
+TEST(GraphTest, ConstructorGraph) {
+  EXPECT_NO_THROW(graph<int> graph1("directed"));
+  EXPECT_NO_THROW(graph<int> graph2("undirected"));
+}
+
+TEST(GraphTest, ConstructorWeightGraph) {
   EXPECT_NO_THROW(weight_graph<int> directed("directed"));
   EXPECT_NO_THROW(weight_graph<int> undirected("undirected"));
 }

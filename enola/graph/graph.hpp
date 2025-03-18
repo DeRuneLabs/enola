@@ -15,6 +15,87 @@
 #include <utility>
 #include <vector>
 
+template <typename T> class graph {
+public:
+  graph(std::string __type) {
+    try {
+      if (__type == "directed" || __type == "undirected") {
+        this->__type = __type;
+      } else {
+        throw std::invalid_argument("cannot recognized the type of graph");
+      }
+    } catch (std::invalid_argument &error) {
+      std::cerr << error.what() << "\n";
+      return;
+    }
+  }
+
+  ~graph() {}
+
+  void add_edge(T u, T v, int64_t w) {
+    if (__type == "undirected") {
+      adj[u].push_back(v);
+      adj[v].push_back(u);
+    } else {
+      adj[u].push_back(v);
+    }
+  }
+
+  std::vector<T> dfs(T start) {
+    std::stack<T> s;
+    std::vector<T> path;
+    std::unordered_map<T, bool> visited;
+
+    s.push(start);
+
+    visited[start] = true;
+    while (!s.empty()) {
+      T current = s.top();
+      path.push_back(current);
+      s.pop();
+
+      for (T &x : adj[current]) {
+        if (visited.find(x) == visited.end()) {
+          s.push(x);
+          visited[x] = true;
+        }
+      }
+    }
+
+    return path;
+  }
+
+  std::vector<T> bfs(T start) {
+    std::queue<T> q;
+    std::vector<T> path;
+    std::unordered_map<T, bool> visited;
+
+    q.push(start);
+
+    visited[start] = true;
+    while (!q.empty()) {
+      int64_t size = q.size();
+      for (int64_t i = 0; i < size; i++) {
+        T current = q.front();
+        path.push_back(current);
+        q.pop();
+
+        for (T &x : adj[current]) {
+          if (visited.find(x) == visited.end()) {
+            q.push(x);
+            visited[x] = true;
+          }
+        }
+      }
+    }
+    return path;
+  }
+
+private:
+  std::unordered_map<T, T> adj;
+  std::string __type;
+};
+
 /**
  * @file Graph.hpp
  * @brief template-base graph implementation supporting and undirected graphs
@@ -164,13 +245,15 @@ public:
    */
   int64_t shortest_path(T start, T end) {
     // initialize map to store distance from the start node to each node
-    // initially, all distance are set to infinity (INT_MAX), execpt for the start node
+    // initially, all distance are set to infinity (INT_MAX), execpt for the
+    // start node
     std::unordered_map<T, int64_t> dist;
     for (auto &x : __elements) { // iterate all node in the graph
-      dist[x] = INT_MAX; // set initial distance to the `infinity`
+      dist[x] = INT_MAX;         // set initial distance to the `infinity`
     }
-    // priority queue to processing node in order of their current shortest distance
-    // queue store pairs of (distance and node), sorted by smallest distance first
+    // priority queue to processing node in order of their current shortest
+    // distance queue store pairs of (distance and node), sorted by smallest
+    // distance first
     std::priority_queue<std::pair<int64_t, T>,
                         std::vector<std::pair<int64_t, T>>,
                         std::greater<std::pair<int64_t, T>>>
@@ -183,7 +266,7 @@ public:
     while (!pq.empty()) {
       // extract node with the smallest current distance from the priority queue
       T currentNode = pq.top().second; // node will process
-      T currentDist = pq.top().first; // current shortest distance to this node
+      T currentDist = pq.top().first;  // current shortest distance to this node
       pq.pop();
 
       // iterating over the outgoing edeg of the current node
@@ -211,8 +294,8 @@ private:
    */
   std::string __type;
   /**
-* @brief representing the set of all element nodes in the graph
-*/
+   * @brief representing the set of all element nodes in the graph
+   */
   std::unordered_set<T> __elements;
 };
 
