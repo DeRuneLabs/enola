@@ -10,8 +10,13 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v4
 
+      - name: verify enola test
+        run: |
+          chmod +x ./test/run_test
+          ls -l ./test/run_test
+
       - name: build and test
         run: |
-          g++ --version
-          chmod +x ./test/run_test
           ./test/run_test
+        env:
+          TEST_ENV_VAR: "enola_test_env"
