@@ -3,6 +3,7 @@
 
 #include <climits>
 #include <cstdint>
+#include <cstdlib>
 #include <functional>
 #include <iostream>
 #include <queue>
@@ -15,15 +16,24 @@
 #include <utility>
 #include <vector>
 
-template <typename T>
+template <typename t>
 class graph {
  public:
-  graph(std::string __type) {
+  graph(std::string                                     __type,
+        std::vector<std::vector<std::pair<t, int64_t>>> __adj = {}) {
     try {
       if (__type == "directed" || __type == "undirected") {
         this->__type = __type;
       } else {
         throw std::invalid_argument("cannot recognized the type of graph");
+      }
+
+      if (!__adj.empty()) {
+        for (size_t i = 0; i < __adj.size(); i++) {
+          for (std::pair<t, int64_t> &x : __adj[i]) {
+            this->add_edge(i, x.first, x.second);
+          }
+        }
       }
     } catch (std::invalid_argument &error) {
       std::cerr << error.what() << "\n";
@@ -33,7 +43,7 @@ class graph {
 
   ~graph() {}
 
-  void add_edge(T u, T v, int64_t w) {
+  void add_edge(t u, t v, int64_t w) {
     if (__type == "undirected") {
       adj[u].push_back(v);
       adj[v].push_back(u);
@@ -42,20 +52,20 @@ class graph {
     }
   }
 
-  std::vector<T> dfs(T start) {
-    std::stack<T>               s;
-    std::vector<T>              path;
-    std::unordered_map<T, bool> visited;
+  std::vector<t> dfs(t start) {
+    std::stack<t>               s;
+    std::vector<t>              path;
+    std::unordered_map<t, bool> visited;
 
     s.push(start);
 
     visited[start] = true;
     while (!s.empty()) {
-      T current = s.top();
+      t current = s.top();
       path.push_back(current);
       s.pop();
 
-      for (T &x : adj[current]) {
+      for (t &x : adj[current]) {
         if (visited.find(x) == visited.end()) {
           s.push(x);
           visited[x] = true;
@@ -66,10 +76,10 @@ class graph {
     return path;
   }
 
-  std::vector<T> bfs(T start) {
-    std::queue<T>               q;
-    std::vector<T>              path;
-    std::unordered_map<T, bool> visited;
+  std::vector<t> bfs(t start) {
+    std::queue<t>               q;
+    std::vector<t>              path;
+    std::unordered_map<t, bool> visited;
 
     q.push(start);
 
@@ -77,11 +87,11 @@ class graph {
     while (!q.empty()) {
       int64_t size = q.size();
       for (int64_t i = 0; i < size; i++) {
-        T current = q.front();
+        t current = q.front();
         path.push_back(current);
         q.pop();
 
-        for (T &x : adj[current]) {
+        for (t &x : adj[current]) {
           if (visited.find(x) == visited.end()) {
             q.push(x);
             visited[x] = true;
@@ -93,8 +103,8 @@ class graph {
   }
 
  private:
-  std::unordered_map<T, T> adj;
-  std::string              __type;
+  std::unordered_map<t, std::vector<t>> adj;
+  std::string                           __type;
 };
 
 /**
@@ -159,6 +169,8 @@ class weight_graph {
     } else if (__type == "directed") {
       adj[u].push_back(std::make_pair(v, w));
     }
+    __elements.insert(u);
+    __elements.insert(v);
   }
 
   /**
@@ -246,6 +258,12 @@ class weight_graph {
    * if not path exist the function return -1
    */
   int64_t shortest_path(T start, T end) {
+    if (__elements.find(start) == __elements.end()) {
+      return -1;
+    }
+    if (__elements.find(end) == __elements.end()) {
+      return -1;
+    }
     // initialize map to store distance from the start node to each node
     // initially, all distance are set to infinity (INT_MAX), execpt for the
     // start node
