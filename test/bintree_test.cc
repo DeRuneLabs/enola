@@ -1,4 +1,5 @@
 #include "../enola/tree/bintree.hpp"
+
 #include <gtest/gtest.h>
 
 TEST(BintreeTests, Constructor) {

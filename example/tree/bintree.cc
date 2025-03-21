@@ -1,17 +1,18 @@
 #include "../../enola/tree/bintree.hpp"
+
 #include <iostream>
 
 int main() {
   bintree<int> tree;
 
   std::cout << "Inserting elements: 50, 30, 70, 20, 40, 60, 80\n";
-  tree.insert(50); // root node
-  tree.insert(30); // left child of root
-  tree.insert(70); // right child of root
-  tree.insert(20); // left child of 30
-  tree.insert(40); // right child of 30
-  tree.insert(60); // left child of 70
-  tree.insert(80); // right child of 70
+  tree.insert(50);  // root node
+  tree.insert(30);  // left child of root
+  tree.insert(70);  // right child of root
+  tree.insert(20);  // left child of 30
+  tree.insert(40);  // right child of 30
+  tree.insert(60);  // left child of 70
+  tree.insert(80);  // right child of 70
 
   // perform in-order traversal
   std::cout << "\nIn-Order Traversal (sorted order): ";

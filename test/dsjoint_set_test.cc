@@ -1,4 +1,5 @@
 #include "../enola/dsjoint_set/dsjoint_set.hpp"
+
 #include <gtest/gtest.h>
 
 TEST(DSUTest, Initialization) {

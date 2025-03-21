@@ -20,8 +20,9 @@
 #include <functional>
 #include <vector>
 
-template <typename T> class avl_tree {
-public:
+template <typename T>
+class avl_tree {
+ public:
   /**
    * @brief default constructor
    * initialize an empty AVL tree with a null root
@@ -102,7 +103,7 @@ public:
     return path;
   }
 
-private:
+ private:
   /**
    * @struct node
    * @brief represent single node in the AVL tree
@@ -111,10 +112,10 @@ private:
    * and height of the substree rooted at this node
    */
   typedef struct node {
-    T info;             // value stored in the node
-    int64_t height;     // height of the node (for balancing)
-    struct node *left;  // pointer to the left child
-    struct node *right; // pointer to the right child
+    T            info;    // value stored in the node
+    int64_t      height;  // height of the node (for balancing)
+    struct node *left;    // pointer to the left child
+    struct node *right;   // pointer to the right child
   } node;
 
   // pointer to the root of the AVL tree
@@ -145,11 +146,11 @@ private:
    * @return pointer to the newly created node
    */
   node *createNode(int info) {
-    node *nn = new node();
-    nn->info = info;
+    node *nn   = new node();
+    nn->info   = info;
     nn->height = 0;
-    nn->left = nullptr;
-    nn->right = nullptr;
+    nn->left   = nullptr;
+    nn->right  = nullptr;
     return nn;
   }
 
@@ -174,9 +175,9 @@ private:
    * @return new root of the rotated substree
    */
   node *rightRotate(node *root) {
-    node *t = root->left;
-    node *u = t->right;
-    t->right = root;
+    node *t    = root->left;
+    node *u    = t->right;
+    t->right   = root;
     root->left = u;
     return t;
   }
@@ -190,9 +191,9 @@ private:
    * @return new root of the rotated substree
    */
   node *leftRotate(node *root) {
-    node *t = root->right;
-    node *u = t->left;
-    t->left = root;
+    node *t     = root->right;
+    node *u     = t->left;
+    t->left     = root;
     root->right = u;
     return t;
   }
@@ -236,14 +237,14 @@ private:
     int b = getBalance(root);
     if (b > 1) {
       if (getBalance(root->left) < 0) {
-        root->left = leftRotate(root->left); // left-right case
+        root->left = leftRotate(root->left);  // left-right case
       }
-      return rightRotate(root); // left-left case
+      return rightRotate(root);  // left-left case
     } else if (b < -1) {
       if (getBalance(root->right) > 0) {
-        root->right = rightRotate(root->right); // right-left case
+        root->right = rightRotate(root->right);  // right-left case
       }
-      return leftRotate(root); // right-right case
+      return leftRotate(root);  // right-right case
     }
     return root;
   }
@@ -284,8 +285,8 @@ private:
 
       // node with two child
       // get inorder sucessor
-      node *temp = minValue(root->right);
-      root->info = temp->info;
+      node *temp  = minValue(root->right);
+      root->info  = temp->info;
       root->right = __remove(root->right, temp->info);
     }
     return root;
@@ -343,4 +344,4 @@ private:
   }
 };
 
-#endif // !TREE_AVL_TREE_HPP
+#endif  // !TREE_AVL_TREE_HPP

@@ -1,4 +1,5 @@
 #include "../../enola/graph/graph.hpp"
+
 #include <iostream>
 
 int main() {

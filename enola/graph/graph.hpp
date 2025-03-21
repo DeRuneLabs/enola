@@ -15,8 +15,9 @@
 #include <utility>
 #include <vector>
 
-template <typename T> class graph {
-public:
+template <typename T>
+class graph {
+ public:
   graph(std::string __type) {
     try {
       if (__type == "directed" || __type == "undirected") {
@@ -42,8 +43,8 @@ public:
   }
 
   std::vector<T> dfs(T start) {
-    std::stack<T> s;
-    std::vector<T> path;
+    std::stack<T>               s;
+    std::vector<T>              path;
     std::unordered_map<T, bool> visited;
 
     s.push(start);
@@ -66,8 +67,8 @@ public:
   }
 
   std::vector<T> bfs(T start) {
-    std::queue<T> q;
-    std::vector<T> path;
+    std::queue<T>               q;
+    std::vector<T>              path;
     std::unordered_map<T, bool> visited;
 
     q.push(start);
@@ -91,9 +92,9 @@ public:
     return path;
   }
 
-private:
+ private:
   std::unordered_map<T, T> adj;
-  std::string __type;
+  std::string              __type;
 };
 
 /**
@@ -109,8 +110,9 @@ private:
  * initialization
  * @tparam T the type of the nodes in the graph
  */
-template <typename T> class weight_graph {
-public:
+template <typename T>
+class weight_graph {
+ public:
   /**
    * @brief Constructor to initialize the graph with a specific type
    *
@@ -169,9 +171,9 @@ public:
    * @return vector containing the node visited in DFS order
    */
   std::vector<T> dfs(T start) {
-    std::stack<T> s;                     // stack simulate recursion
-    std::vector<T> path;                 // store traversal oreder
-    std::unordered_map<T, bool> visited; // tracking visited nodes
+    std::stack<T>               s;        // stack simulate recursion
+    std::vector<T>              path;     // store traversal oreder
+    std::unordered_map<T, bool> visited;  // tracking visited nodes
 
     s.push(start);
     visited[start] = true;
@@ -203,9 +205,9 @@ public:
    * @return vector containing node visited in BFS order
    */
   std::vector<T> bfs(T start) {
-    std::queue<T> q;     // queue to process nodes level by level
-    std::vector<T> path; // store the traversal order
-    std::unordered_map<T, bool> visited; // track visited order
+    std::queue<T>               q;     // queue to process nodes level by level
+    std::vector<T>              path;  // store the traversal order
+    std::unordered_map<T, bool> visited;  // track visited order
 
     q.push(start);
     visited[start] = true;
@@ -248,8 +250,8 @@ public:
     // initially, all distance are set to infinity (INT_MAX), execpt for the
     // start node
     std::unordered_map<T, int64_t> dist;
-    for (auto &x : __elements) { // iterate all node in the graph
-      dist[x] = INT_MAX;         // set initial distance to the `infinity`
+    for (auto &x : __elements) {  // iterate all node in the graph
+      dist[x] = INT_MAX;          // set initial distance to the `infinity`
     }
     // priority queue to processing node in order of their current shortest
     // distance queue store pairs of (distance and node), sorted by smallest
@@ -260,12 +262,12 @@ public:
         pq;
     // push the start node into the priority queue with distance of 0
     pq.push_back(std::make_pair(0, start));
-    dist[start] = 0; // distance to the start node is 0
+    dist[start] = 0;  // distance to the start node is 0
 
     // process node until the priority empty
     while (!pq.empty()) {
       // extract node with the smallest current distance from the priority queue
-      T currentNode = pq.top().second; // node will process
+      T currentNode = pq.top().second;  // node will process
       T currentDist = pq.top().first;  // current shortest distance to this node
       pq.pop();
 
@@ -281,7 +283,7 @@ public:
     return (dist[end] != INT_MAX) ? dist[end] : -1;
   }
 
-private:
+ private:
   /**
    * @brief adjacency list representation of the graph
    *
@@ -299,4 +301,4 @@ private:
   std::unordered_set<T> __elements;
 };
 
-#endif // ! GRAPH_GRAPH_HPP_
+#endif  // ! GRAPH_GRAPH_HPP_

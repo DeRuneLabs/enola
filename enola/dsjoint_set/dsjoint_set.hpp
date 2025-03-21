@@ -21,7 +21,7 @@
  * - additional metadata: size, minimum, and maximum values for each set
  */
 class dsu {
-public:
+ public:
   /**
    * @brief constructor to initialize the DSU with `n` elements
    *
@@ -45,7 +45,7 @@ public:
     minElement.assign(n, 0);
 
     for (uint64_t i = 0; i < n; i++) {
-      depth[0] = 0;
+      depth[0]      = 0;
       maxElement[i] = i;
     }
 
@@ -66,7 +66,7 @@ public:
    */
   uint64_t findSet(uint64_t i) {
     if (p[i] == i) {
-      return i; // if `i` its own parent, it is the root
+      return i;  // if `i` its own parent, it is the root
     }
     // update the parent of `i` to the root
     return (p[i] = findSet(p[i]));
@@ -83,20 +83,20 @@ public:
    */
   void UnionSet(uint64_t i, uint64_t j) {
     if (isSame(i, j)) {
-      return; // if `i`, `j` are already in the same set, do nothing
+      return;  // if `i`, `j` are already in the same set, do nothing
     }
 
-    uint64_t x = findSet(i); // root of the set containing `i`
-    uint64_t y = findSet(j); // root of the set containig `j`
+    uint64_t x = findSet(i);  // root of the set containing `i`
+    uint64_t y = findSet(j);  // root of the set containig `j`
 
     // attach the smaller tree ot the root of the larger tree
     if (depth[x] > depth[y]) {
-      std::swap(x, y); // make sure `x` is the shallower tree
+      std::swap(x, y);  // make sure `x` is the shallower tree
     }
-    p[x] = y; // attach `x` to `y`
+    p[x] = y;  // attach `x` to `y`
 
     if (depth[x] == depth[y]) {
-      depth[y]++; // increment depth if both tree have the same depth
+      depth[y]++;  // increment depth if both tree have the same depth
     }
     // update metadata for the merge set
     setSize[y] += setSize[x];
@@ -124,9 +124,9 @@ public:
    */
   std::vector<uint64_t> get(uint64_t i) {
     std::vector<uint64_t> ans;
-    ans.push_back(get_min(i)); // min element in the set
-    ans.push_back(get_max(i)); // max element in the set
-    ans.push_back(size(i));    // size of the set
+    ans.push_back(get_min(i));  // min element in the set
+    ans.push_back(get_max(i));  // max element in the set
+    ans.push_back(size(i));     // size of the set
     return ans;
   }
 
@@ -154,12 +154,12 @@ public:
    */
   uint64_t get_min(uint64_t i) { return minElement[findSet(i)]; }
 
-private:
-  std::vector<uint64_t> p;          // parent pointer for each element
-  std::vector<uint64_t> depth;      // depth of each set
-  std::vector<uint64_t> setSize;    // size of each set
-  std::vector<uint64_t> maxElement; // max element in each set
-  std::vector<uint64_t> minElement; // min element in each set
+ private:
+  std::vector<uint64_t> p;           // parent pointer for each element
+  std::vector<uint64_t> depth;       // depth of each set
+  std::vector<uint64_t> setSize;     // size of each set
+  std::vector<uint64_t> maxElement;  // max element in each set
+  std::vector<uint64_t> minElement;  // min element in each set
 };
 
-#endif // !DSJOINT_SET_DJSOINT_SET_HPP
+#endif  // !DSJOINT_SET_DJSOINT_SET_HPP

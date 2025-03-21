@@ -1,11 +1,13 @@
 #include "../enola/matrix/tensor.hpp"
-#include <cstdint>
+
 #include <gtest/gtest.h>
+
+#include <cstdint>
 #include <stdexcept>
 
 TEST(TensorTest, InitializeAndDimension) {
   int64_t dim1 = 2, dim2 = 3, dim3 = 4;
-  tensor t(dim1, dim2, dim3);
+  tensor  t(dim1, dim2, dim3);
 
   auto [d1, d2, d3] = t.get_dimension();
   EXPECT_EQ(d1, dim1);
@@ -15,7 +17,7 @@ TEST(TensorTest, InitializeAndDimension) {
 
 TEST(TensorTest, AccessModifyElement) {
   int64_t dim1 = 2, dim2 = 3, dim3 = 4;
-  tensor t(dim1, dim2, dim3);
+  tensor  t(dim1, dim2, dim3);
 
   t(0, 0, 0) = 42;
   t(1, 2, 3) = 99;
@@ -29,7 +31,7 @@ TEST(TensorTest, AccessModifyElement) {
 
 TEST(TensorTest, OutOfBounds) {
   int64_t dim1 = 2, dim2 = 3, dim3 = 4;
-  tensor t(dim1, dim2, dim3);
+  tensor  t(dim1, dim2, dim3);
 
   EXPECT_NO_THROW(t(1, 2, 3));
 
@@ -40,7 +42,7 @@ TEST(TensorTest, OutOfBounds) {
 
 TEST(TensorTest, LargeTensor) {
   int64_t dim1 = 100, dim2 = 100, dim3 = 100;
-  tensor t(dim1, dim2, dim3);
+  tensor  t(dim1, dim2, dim3);
 
   auto [d1, d2, d3] = t.get_dimension();
   EXPECT_EQ(d1, dim1);
@@ -52,7 +54,7 @@ TEST(TensorTest, LargeTensor) {
 
 TEST(TensorTest, DefaultInitialization) {
   int64_t dim1 = 3, dim2 = 3, dim3 = 3;
-  tensor t(dim1, dim2, dim3);
+  tensor  t(dim1, dim2, dim3);
 
   for (int64_t i = 0; i < dim1; ++i) {
     for (int64_t j = 0; j < dim2; ++j) {

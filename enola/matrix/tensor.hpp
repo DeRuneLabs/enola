@@ -13,7 +13,7 @@
  */
 struct _3d_matrix {
   std::vector<std::vector<std::vector<int64_t>>> mat;
-  int64_t dim1, dim2, dim3;
+  int64_t                                        dim1, dim2, dim3;
 };
 
 /**
@@ -25,7 +25,7 @@ struct _3d_matrix {
  * underlying 3d matrix
  */
 class tensor {
-public:
+ public:
   /**
    * @brief construct tensor with the specification dimension
    *
@@ -42,8 +42,9 @@ public:
     matrix.dim2 = dim2;
     matrix.dim3 = dim3;
     // resize the 3d matrix to the specified dimensions
-    matrix.mat.resize(dim1, std::vector<std::vector<int64_t>>(
-                                dim2, std::vector<int64_t>(dim3)));
+    matrix.mat.resize(
+        dim1,
+        std::vector<std::vector<int64_t>>(dim2, std::vector<int64_t>(dim3)));
   }
 
   /**
@@ -91,9 +92,9 @@ public:
     return matrix.mat.at(i).at(j).at(k);
   }
 
-private:
+ private:
   // internal representation of the 3d tensor
   _3d_matrix matrix;
 };
 
-#endif // !MATRIX_TENSOR_HPP
+#endif  // !MATRIX_TENSOR_HPP

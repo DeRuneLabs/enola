@@ -1,4 +1,5 @@
 #include "../enola/graph/graph.hpp"
+
 #include <gtest/gtest.h>
 
 TEST(GraphTest, ConstructorGraph) {
@@ -19,7 +20,7 @@ TEST(GraphTest, AddEdgeDirected) {
   graph.add_edge(3, 4, 40);
 
   std::vector<int> dfs_result = graph.dfs(1);
-  std::vector<int> expected = {1, 2, 3, 4};
+  std::vector<int> expected   = {1, 2, 3, 4};
   EXPECT_EQ(dfs_result, expected);
 }
 
@@ -30,7 +31,7 @@ TEST(GraphTest, DFSTraversalDirected) {
   graph.add_edge(2, 3, 20);
   graph.add_edge(3, 4, 30);
 
-  std::vector<int> result = graph.dfs(1);
+  std::vector<int> result   = graph.dfs(1);
   std::vector<int> expected = {1, 2, 3, 4};
   EXPECT_EQ(result, expected);
 }
@@ -42,7 +43,7 @@ TEST(GraphTest, BFSTraversalDirected) {
   graph.add_edge(2, 3, 20);
   graph.add_edge(3, 4, 30);
 
-  std::vector<int> result = graph.bfs(1);
+  std::vector<int> result   = graph.bfs(1);
   std::vector<int> expected = {1, 2, 3, 4};
   EXPECT_EQ(result, expected);
 }

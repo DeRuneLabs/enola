@@ -17,8 +17,9 @@
  * comparison operator
  * (<, >)
  */
-template <typename T> class bintree {
-public:
+template <typename T>
+class bintree {
+ public:
   /**
    * @brief default constructor for binary tree
    *
@@ -71,16 +72,16 @@ public:
    */
   std::vector<std::vector<T>> level_order() {
     std::vector<std::vector<T>>
-        levels; // store the resut of level-order traversak
+        levels;  // store the resut of level-order traversak
     if (!root) {
-      return levels; // return empty if the tree is empty
+      return levels;  // return empty if the tree is empty
     }
-    std::queue<T> q; // queue to facilitate breadth-first traversal
+    std::queue<T> q;  // queue to facilitate breadth-first traversal
 
     q.push(root);
     while (!q.empty()) {
-      int64_t size = q.size(); // number of node at the current the level
-      std::vector<T> row;      // temporary storage for the current level node
+      int64_t size = q.size();  // number of node at the current the level
+      std::vector<T> row;       // temporary storage for the current level node
 
       for (int64_t i = 0; i < size; i++) {
         T current = q.front();
@@ -95,7 +96,7 @@ public:
           q.push(current->left);
         }
       }
-      levels.push_back(row); // add the current level node to the result
+      levels.push_back(row);  // add the current level node to the result
     }
     return levels;
   }
@@ -128,7 +129,7 @@ public:
    * @return vector containing the value of node in pre-order sequence
    */
   std::vector<T> preorder() {
-    std::vector<T> path; // store result of pre-order traversal
+    std::vector<T> path;  // store result of pre-order traversal
     __preorder([&](node *callbacked) { path.push_back(callbacked->info); },
                root);
     return path;
@@ -145,13 +146,13 @@ public:
    * @return vector containing the value of nodes in post-order sequence
    */
   std::vector<T> postorder() {
-    std::vector<T> path; // store result of post-order traversal
+    std::vector<T> path;  // store result of post-order traversal
     __postorder([&](node *callbacked) { path.push_back(callbacked->info); },
                 root);
     return path;
   }
 
-private:
+ private:
   /**
    * @brief represent single node in the binary tree
    *
@@ -161,11 +162,11 @@ private:
    * -  `right`: pointer to the right child node
    */
   struct node {
-    T info;             // value stored in the node
-    node *right, *left; // pointer to right and left child
+    T     info;          // value stored in the node
+    node *right, *left;  // pointer to right and left child
   };
 
-  node *root; // pointer to the root node of the binary tree
+  node *root;  // pointer to the root node of the binary tree
 
   /**
    * @brief create new node with the given key
@@ -177,8 +178,8 @@ private:
    * @return pointer to the newly created node
    */
   node *new_node(T &key) {
-    node *p = new node;
-    p->info = key;
+    node *p  = new node;
+    p->info  = key;
     p->right = p->left = nullptr;
     return p;
   }
@@ -242,7 +243,7 @@ private:
         while (temp->left) {
           temp = temp->left;
         }
-        root->info = temp->info;
+        root->info  = temp->info;
         root->right = __remove(root->right, temp->info);
       }
     }
@@ -251,12 +252,12 @@ private:
 
   /**
    * @brief recursively perform in-order traversal of the binary-tree
-   * 
+   *
    * applies the provide callback function to each node in in-order sequence
-   * 
+   *
    * @param callback function to be applied to each node during traversal
    * @param root current root of the subtree being processed
-  */
+   */
   void __inorder(std::function<void(node *)> callback, node *root) {
     if (root) {
       __inorder(callback, root->left);
@@ -267,12 +268,12 @@ private:
 
   /**
    * @brief recursively perform post-order traversal of the binary-tree
-   * 
+   *
    * applies the provided callback function to each node in post-order sequence
    *
    * @param callback function to be applied to each node during traversal
    * @param root current root of the subtree being processed
-  */
+   */
   void __postorder(std::function<void(node *)> callback, node *root) {
     if (root) {
       __inorder(callback, root->left);
@@ -288,7 +289,7 @@ private:
    *
    * @param callback function to be applied to each node during traversal
    * @param root current root of the subtree being processed
-  */
+   */
   void __preorder(std::function<void(node *)> callback, node *root) {
     if (root) {
       callback(root);
@@ -298,4 +299,4 @@ private:
   }
 };
 
-#endif // !TREE_BINTREE_HPP
+#endif  // !TREE_BINTREE_HPP

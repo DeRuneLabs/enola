@@ -1,5 +1,7 @@
 #include "../enola/tree/avl_tree.hpp"
+
 #include <gtest/gtest.h>
+
 #include <vector>
 
 TEST(AVLTreeTests, InsertAndTraverse) {

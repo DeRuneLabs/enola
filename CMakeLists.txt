@@ -8,6 +8,7 @@ include_directories(enola/graph)
 include_directories(enola/tree)
 include_directories(enola/dsjoint_set)
 include_directories(enola/matrix)
+include_directories(enola/plot/iterator)
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 

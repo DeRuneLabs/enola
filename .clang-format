@@ -1,0 +1,50 @@
+BasedOnStyle: Google
+
+# Indentation
+IndentWidth: 2 
+TabWidth: 8 
+UseTab: Never 
+
+# Braces
+BreakBeforeBraces: Attach
+AllowShortBlocksOnASingleLine: false 
+AllowShortIfStatementsOnASingleLine: false 
+
+# Line Breaking
+ColumnLimit: 80
+BinPackParameters: false 
+BinPackArguments: false
+AllowAllParametersOfDeclarationOnNextLine: true
+
+# Spaces
+SpacesInParentheses: false   
+SpacesInSquareBrackets: false 
+SpacesInAngles: false 
+SpaceBeforeAssignmentOperators: true 
+
+# Pointers and References
+PointerAlignment: Right
+ReferenceAlignment: Right
+
+# Naming Conventions
+# Note: clang-format does not enforce naming conventions directly. Use linters like cpplint for this.
+
+# Sorting Includes
+SortIncludes: true         
+IncludeCategories:
+  - Regex: '^<.*\.h>'               
+    Priority: 1
+  - Regex: '^"enola/.*\.hpp"'    # Project headers (e.g., "my_project/foo.h").
+    Priority: 2
+  - Regex: '^".*\.hpp"' 
+    Priority: 3
+
+# Comments
+CommentPragmas: '^ IWYU pragma:'
+ReflowComments: true 
+
+# Miscellaneous
+FixNamespaceComments: true 
+KeepEmptyLinesAtTheStartOfBlocks: false 
+AlignConsecutiveAssignments: true  
+AlignConsecutiveDeclarations: true 
