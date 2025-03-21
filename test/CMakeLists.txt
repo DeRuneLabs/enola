@@ -9,7 +9,17 @@ add_executable(
   iterator_link_list_test.cc
   iterator_list_iterator_test.cc
   list_linked_list_test.cc)
-target_link_libraries(run_tests GTest::GTest GTest::Main)
+
+target_link_libraries(run_tests PRIVATE GTest::GTest GTest::Main)
+
+target_include_directories(
+  run_tests
+  PRIVATE ${PROJECT_SOURCE_DIR}/enola/graph
+          ${PROJECT_SOURCE_DIR}/enola/tree
+          ${PROJECT_SOURCE_DIR}/enola/dsjoint_set
+          ${PROJECT_SOURCE_DIR}/enola/matrix
+          ${PROJECT_SOURCE_DIR}/enola/plot/iterator
+          ${PROJECT_SOURCE_DIR}/enola/list)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL
                                            "Clang")
@@ -17,3 +27,4 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL
 endif()
 
 enable_testing()
+add_test(NAME run_tests COMMAND run_tests)
