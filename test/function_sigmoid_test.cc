@@ -31,10 +31,21 @@ TEST(SigmoidTest, HandlesMultipleElements) {
   }
 }
 
-TEST(SigmoidTest, HandlesLargeValues) {
+TEST(SigmoidTest, HandlesFloatValue) {
   std::vector<float> input           = {-100.0f, 100.0f};
   std::vector<float> expected_output = {0.0f, 1.0f};
   std::vector<float> actual_output   = enola::function::sigmoid(input);
+
+  ASSERT_EQ(actual_output.size(), expected_output.size());
+  for (size_t i = 0; i < actual_output.size(); ++i) {
+    EXPECT_NEAR(actual_output[i], expected_output[i], 1e-5);
+  }
+}
+
+TEST(SigmoidTest, HandleLargeValues) {
+  std::vector<long double> input           = {-1000.0L, 1000.0L};
+  std::vector<long double> expected_output = {0.0L, 1.0L};
+  std::vector<long double> actual_output   = enola::function::sigmoid(input);
 
   ASSERT_EQ(actual_output.size(), expected_output.size());
   for (size_t i = 0; i < actual_output.size(); ++i) {

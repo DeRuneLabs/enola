@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <type_traits>
 #include <vector>
 
 namespace enola {
@@ -29,20 +30,31 @@ namespace function {
  * with each element being the result of applying the sigmoid function to the
  * corresponding input element
  */
-inline std::vector<float> sigmoid(const std::vector<float>& m1) {
+template <typename T>
+inline std::vector<T> sigmoid(const std::vector<T>& m1) {
+  // make sure tha type param floating point numbers
+  static_assert(std::is_floating_point_v<T>,
+                "sigmid only support floating point numbers");
   if (m1.empty()) {
     return {};  // return empty vector if the input is empty
   }
 
   // pre-allocate output vector with the same size as the input vector
-  std::vector<float> output(m1.size());
+  std::vector<T> output(m1.size());
   // apply sigmoid function to each element of the input vector
   std::transform(m1.begin(),
                  m1.end(),        // input range
                  output.begin(),  // output range
-                 [](float x) {    // lambda function to compute sigmoid
-                   return 1.0f /
-                          (1.0f + std::exp(-x));  // return sigmoid formula
+                 [](T x) -> T {   // lambda function to compute sigmoid
+                                  // try to avoiding overflow
+                   if (x > T(100)) {
+                     return T(1.0);
+                   }
+                   // try to avoiding underflow
+                   if (x < T(-100)) {
+                     return T(0.0);
+                   }
+                   return T(1.0) / (T(1.0) + std::exp(-x));
                  });
   return output;  // return the transformed vector
 }
