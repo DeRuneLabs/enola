@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build-and-testing:
     runs-on: ${{ matrix.os }}
-    startegy:
+    strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
     
