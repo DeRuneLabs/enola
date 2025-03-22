@@ -1,10 +1,4 @@
-# enola
-library for perform some tensor operation for specific project, built with C++17
-
-## basic usage
-
-```cpp
-#include <enola/tensor/tensor_storage.hpp>
+#include "../enola/tensor/tensor_storage.hpp"
 #include <array>
 #include <iostream>
 
@@ -25,8 +19,14 @@ int main() {
   }
   std::cout << std::endl;
 
+  std::cout << "element in the storage (range base for loop): " << std::endl;
+  for (const auto& element : storage) {
+    std::cout << element << " ";
+  }
+  std::cout << std::endl;
+
+  std::size_t total_elements = tensor::num_elements(shape);
+  std::cout << "total number of element in the tensor: " << total_elements << std::endl;
+
   return 0;
 }
-```
-
-for more example check on [example](example) folder.
