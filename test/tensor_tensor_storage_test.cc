@@ -6,7 +6,7 @@
 TEST(TensorStorageTest, SingleElementTensor) {
   std::array<std::size_t, 1> shape = {1};
 
-  tensor::Storage<int, tensor::CPU> storage(shape);
+  enola::tensor::Storage<int, enola::tensor::CPU> storage(shape);
 
   EXPECT_EQ(storage.size(), 1);
   storage[0] = 42;
@@ -16,7 +16,7 @@ TEST(TensorStorageTest, SingleElementTensor) {
 TEST(TensorStorageTest, LargeTensor) {
   std::vector<std::size_t> shape = {1000, 1000};
 
-  tensor::Storage<int, tensor::CPU> storage(shape);
+  enola::tensor::Storage<int, enola::tensor::CPU> storage(shape);
   EXPECT_EQ(storage.size(), 1000 * 1000);
 
   storage[0]    = 1;
@@ -29,18 +29,18 @@ TEST(TensorStorageTest, LargeTensor) {
 TEST(TensorStorageTest, FixedSizeCompilationTimeEvaluation) {
   constexpr std::array<std::size_t, 3> shape = {2, 3, 4};
 
-  constexpr std::size_t num_elements = tensor::num_elements(shape);
+  constexpr std::size_t num_elements = enola::tensor::num_elements(shape);
 
   static_assert(num_elements == 24, "Compile-time evaluation failed");
 
-  tensor::Storage<int, tensor::CPU> storage(shape);
+  enola::tensor::Storage<int, enola::tensor::CPU> storage(shape);
   EXPECT_EQ(storage.size(), 24);
 }
 
 TEST(TensorStorageTest, FixedShapeInitialization) {
   std::vector<std::size_t> shape = {2, 3, 4};
 
-  tensor::Storage<double, tensor::CPU> storage(shape);
+  enola::tensor::Storage<double, enola::tensor::CPU> storage(shape);
 
   EXPECT_EQ(storage.size(), 24);
 
@@ -53,7 +53,7 @@ TEST(TensorStorageTest, FixedShapeInitialization) {
 TEST(TensorStorageTest, DynamicShapeInitialization) {
   std::vector<std::size_t> shape = {3, 4};
 
-  tensor::Storage<double, tensor::CPU> storage(shape);
+  enola::tensor::Storage<double, enola::tensor::CPU> storage(shape);
 
   EXPECT_EQ(storage.size(), 12);
 

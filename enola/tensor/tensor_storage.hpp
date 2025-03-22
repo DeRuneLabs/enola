@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <vector>
 
+namespace enola {
 namespace tensor {
 /**
  * @brief represent CPU device type
@@ -176,5 +177,6 @@ struct Storage<T, CPU> {
 };
 
 }  // namespace tensor
+}  // namespace enola
 
 #endif  // !TENSOR_TENSOR_STORAGE_HPP

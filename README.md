@@ -8,6 +8,8 @@ library for perform some tensor operation for specific project, built with C++17
 #include <array>
 #include <iostream>
 
+using namespace enola;
+
 int main() {
   std::array<std::size_t, 2> shape = {2, 2};
 

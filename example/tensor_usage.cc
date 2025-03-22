@@ -5,7 +5,7 @@
 int main() {
   std::array<std::size_t, 2> shape = {2, 2};
 
-  tensor::Storage<double, tensor::CPU> storage(shape);
+  enola::tensor::Storage<double, enola::tensor::CPU> storage(shape);
   for (std::size_t i = 0; i < storage.size(); ++i) {
     storage[i] = static_cast<double>(i + 1);
   };
@@ -25,7 +25,7 @@ int main() {
   }
   std::cout << std::endl;
 
-  std::size_t total_elements = tensor::num_elements(shape);
+  std::size_t total_elements = enola::tensor::num_elements(shape);
   std::cout << "total number of element in the tensor: " << total_elements << std::endl;
 
   return 0;
