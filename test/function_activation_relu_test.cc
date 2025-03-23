@@ -39,3 +39,42 @@ TEST(ReluTest, HandlesLargeValues) {
     EXPECT_NEAR(actual_output[i], expected_output[i], 1e-5);
   }
 }
+
+TEST(ReluDerivativeTest, HandleEmptyInput) {
+  std::vector<float> input           = {};
+  std::vector<float> expected_output = {};
+  std::vector<float> actual_output   = enola::function::relu_derivative(input);
+
+  EXPECT_EQ(actual_output, expected_output);
+}
+
+TEST(ReluDerivativeTest, HandleSingleNegativeElement) {
+  std::vector<float> input           = {-1.0f};
+  std::vector<float> expected_output = {0.0f};
+  std::vector<float> actual_output   = enola::function::relu_derivative(input);
+
+  EXPECT_FLOAT_EQ(actual_output[0], expected_output[0]);
+}
+
+TEST(ReluDerivativeTest, HandleMultipleElement) {
+  std::vector<float> input           = {-2.0f, -1.0f, 0.0f, 1.0f, 2.0f};
+  std::vector<float> expected_output = {0.0f, 0.0f, 1.0f, 1.0f, 1.0f};
+  std::vector<float> actual_output   = enola::function::relu_derivative(input);
+
+  ASSERT_EQ(actual_output.size(), expected_output.size());
+
+  for (size_t i = 0; i < actual_output.size(); ++i) {
+    EXPECT_FLOAT_EQ(actual_output[i], expected_output[i]);
+  }
+}
+
+TEST(ReluDerivativeTest, HandleLargeNegativeValue) {
+  std::vector<float> input           = {-1000.0f, -100.0f};
+  std::vector<float> expected_output = {0.0f, 0.0f};
+  std::vector<float> actual_output   = enola::function::relu_derivative(input);
+
+  ASSERT_EQ(actual_output.size(), expected_output.size());
+  for (size_t i = 0; i < actual_output.size(); ++i) {
+    EXPECT_FLOAT_EQ(actual_output[i], expected_output[i]);
+  }
+}
