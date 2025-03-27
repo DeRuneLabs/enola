@@ -1,12 +1,4 @@
-# enola
-library for perform some tensor operation for specific project, built with C++17
-
-## basic usage
-
-**Simple one layer neural network**
-
-```cpp
-#include <enola/function/sigmoid.hpp>
+#include "../../enola/function/sigmoid.hpp"
 #include <iostream>
 #include <random>
 
@@ -60,6 +52,3 @@ int main() {
 
   return 0;
 }
-```
-
-for more example check on [example](example) folder.
