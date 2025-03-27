@@ -6,7 +6,8 @@ add_executable(
   function_activation_binary_step_test.cc
   function_activation_softplus_test.cc
   function_activation_squareplus.cc
-  function_activation_swish.cc)
+  function_activation_swish.cc
+  function_activation_elu_test.cc)
 
 target_link_libraries(run_tests PRIVATE GTest::GTest GTest::Main)
 
