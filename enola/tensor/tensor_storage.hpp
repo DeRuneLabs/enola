@@ -2,6 +2,7 @@
 #define TENSOR_TENSOR_STORAGE_HPP
 
 #include <cstddef>
+#include <stdexcept>
 #include <type_traits>
 #include <vector>
 
@@ -105,7 +106,13 @@ struct Storage<T, CPU> {
    * @param shape the shape of the tensor
    */
   template <typename ShapeType>
-  explicit Storage(const ShapeType& shape) : data(num_elements(shape), T{}) {}
+  explicit Storage(const ShapeType& shape) {
+    std::size_t total_elements = num_elements(shape);
+    if (total_elements == 0) {
+      throw std::invalid_argument("shape must have non-zero dimensions");
+    }
+    data.resize(total_elements, T{});
+  }
 
   /**
    * @brief accesses an element at the specified index
@@ -115,7 +122,12 @@ struct Storage<T, CPU> {
    * @param i the index of the element to access
    * @return reference to the element ate the specified index
    */
-  [[nodiscard]] constexpr T& operator[](std::size_t i) noexcept {
+  [[nodiscard]] constexpr T& operator[](std::size_t i) noexcept(false) {
+#ifdef DEBUG
+    if (i >= data.size()) {
+      throw std::out_of_range("index out of range");
+    }
+#endif  // DEBUG
     return data[i];
   }
 
@@ -127,7 +139,13 @@ struct Storage<T, CPU> {
    * @param i the index of the element to access
    * @return const reference to the element at the specified index
    */
-  [[nodiscard]] constexpr const T& operator[](std::size_t i) const noexcept {
+  [[nodiscard]] constexpr const T& operator[](std::size_t i) const
+      noexcept(false) {
+#ifdef DEBUG
+    if (i >= data.size()) {
+      throw std::out_of_range("index out of range");
+    }
+#endif  // DEBUG
     return data[i];
   }
 
@@ -170,6 +188,15 @@ struct Storage<T, CPU> {
    */
   [[nodiscard]] constexpr std::size_t size() const noexcept {
     return data.size();
+  }
+
+  template <typename ShapeType>
+  void resize(const ShapeType& new_shape) {
+    std::size_t new_size = num_elements(new_shape);
+    if (new_size == 0) {
+      throw std::invalid_argument("new shape must have non-zero dimensions");
+    }
+    data.resize(new_size, T{});
   }
 
  private:

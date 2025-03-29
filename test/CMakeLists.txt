@@ -20,7 +20,8 @@ target_include_directories(
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL
                                            "Clang")
-  target_compile_options(run_tests PRIVATE -Wno-non-template-friend)
+  target_compile_options(run_tests PRIVATE -Wno-non-template-friend
+                                           -Wno-unused-result)
 endif()
 
 enable_testing()

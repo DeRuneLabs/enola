@@ -63,3 +63,30 @@ TEST(TensorStorageTest, DynamicShapeInitialization) {
     EXPECT_DOUBLE_EQ(storage[i], 0.0);
   }
 }
+
+TEST(TensorStorageTest, BoundCheck) {
+#define DEBUG
+  std::vector<std::size_t>                        shape = {2, 3};
+  enola::tensor::Storage<int, enola::tensor::CPU> storage(shape);
+
+  EXPECT_NO_THROW(storage[0]);
+#undef DEBUG
+}
+
+TEST(TensorStorageTest, ResizeStorage) {
+  std::vector<std::size_t>                        initial_shape = {2, 3};
+  enola::tensor::Storage<int, enola::tensor::CPU> storage(initial_shape);
+
+  EXPECT_EQ(storage.size(), 6);
+
+  std::vector<std::size_t> new_shape = {3, 4};
+  storage.resize(new_shape);
+
+  EXPECT_EQ(storage.size(), 12);
+  for (std::size_t i = 0; i < storage.size(); ++i) {
+    EXPECT_EQ(storage[i], 0);
+  }
+
+  std::vector<std::size_t> invalid_shape = {0, 4};
+  EXPECT_THROW(storage.resize(invalid_shape), std::invalid_argument);
+}
