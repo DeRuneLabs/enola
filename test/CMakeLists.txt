@@ -1,6 +1,5 @@
 add_executable(
   run_tests
-  tensor_tensor_storage_test.cc
   function_sigmoid_test.cc
   function_activation_relu_test.cc
   function_activation_binary_step_test.cc
@@ -8,7 +7,9 @@ add_executable(
   function_activation_squareplus.cc
   function_activation_swish.cc
   function_activation_elu_test.cc
-  nn_test.cc)
+  nn_test.cc
+  tensor_tensor_storage_test.cc
+  tensor_ops_test.cc)
 
 target_link_libraries(run_tests PRIVATE GTest::GTest GTest::Main)
 
