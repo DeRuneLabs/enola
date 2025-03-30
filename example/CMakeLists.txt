@@ -9,6 +9,7 @@ add_executable(swish_example swish_usage.cc)
 add_executable(elu_example elu_usage.cc)
 add_executable(neural_network_example neural_network/simple_neural_network.cc)
 add_executable(tensor_ops_example tensor_operation_usage.cc)
+add_executable(mae_example score/mae_usage.cc)
 
 target_include_directories(tensor_example
                            PRIVATE ${PROJECT_SOURCE_DIR}/enola/tensor)
@@ -37,6 +38,8 @@ target_include_directories(
 
 target_include_directories(tensor_ops_example
                            PRIVATE ${PROJECT_SOURCE_DIR}/enola/activation)
+target_include_directories(mae_example
+                           PRIVATE ${PROJECT_SOURCE_DIR}/enola/score)
 
 target_include_directories(
   neural_network_example

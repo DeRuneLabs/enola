@@ -9,7 +9,7 @@ add_executable(
   function_activation_elu_test.cc
   nn_test.cc
   tensor_tensor_storage_test.cc
-  tensor_ops_test.cc)
+  tensor_ops_test.cc score_mae_test.cc)
 
 target_link_libraries(run_tests PRIVATE GTest::GTest GTest::Main)
 
