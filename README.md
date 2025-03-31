@@ -1,5 +1,22 @@
-# enola
-library for perform some tensor operation for specific project, built with C++17
+# Enola
+Library for perform some tensor operation for specific project, built with C++17
+
+currently including:
+- Neural Network
+- Function:
+  - Sigmoid
+  - Activation Function:
+    - Binary Step
+    - Exponential Linear Unit (ELU)
+    - Rectified Linear Unit (RELU)
+    - Softplus
+    - Squareplus
+    - Swish
+- Score:
+  - Mean Absolute Error
+- Tensor:
+  - Operation
+  - Storage ( Currently Support on CPU Process )
 
 ## basic usage
 
