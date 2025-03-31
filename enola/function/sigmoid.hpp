@@ -6,6 +6,12 @@
 #include <type_traits>
 #include <vector>
 
+#ifdef _WIN32
+#include <cstdlib>
+#include <intrin.h>
+#define WINDOWS_PLATFORM
+#endif
+
 namespace enola {
 namespace function {
 /**
@@ -54,6 +60,19 @@ inline std::vector<T> sigmoid(const std::vector<T>& m1) {
                    if (x < T(-100)) {
                      return T(0.0);
                    }
+#ifdef WINDOWS_PLATFORM
+                  // windows platform using fabs for float number value
+                  // to make sure consistent behaviour on platform
+                   if (std::fabs(x) < std::numeric_limits<T>::epsilon()) {
+                    return T(0.5); // approximate to near zero
+                   }
+
+                   #ifdef __AVX__
+                    __m256 vx = _mm256_set_set1_ps(static_cast<float>(x));
+                    __m256 vexp = _mm256_exp_ps(vx); // avx exp intrisc
+                    return T(1.0) / (T(1.0) + static_cast<T>(__m256_cvtss_f32(vexp)));
+                   #endif
+#endif
                    return T(1.0) / (T(1.0) + std::exp(-x));
                  });
   return output;  // return the transformed vector
