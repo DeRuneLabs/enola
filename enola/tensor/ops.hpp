@@ -2,7 +2,12 @@
 #define TENSOR_OPS_HPP
 
 #include "tensor_storage.hpp"
+#include <iostream>
 #include <stdexcept>
+
+#ifndef DEBUG
+#define DEBUG 0
+#endif  // !DEBUG
 
 namespace enola {
 namespace tensor {
@@ -42,12 +47,33 @@ template <typename T>
   auto            shape = get_shape(lhs);
   Storage<T, CPU> result(shape);
 
+  if constexpr (DEBUG) {
+    std::cout << "[DEBUG] perform element-wise addition memory usage: "
+              << result.size() * sizeof(T) << "bytes\n";
+  }
+
   for (std::size_t i = 0; i < lhs.size(); ++i) {
+#if DEBUG
+    if (i >= lhs.size() || i >= rhs.size()) {
+      throw std::out_of_range(
+          "index out of range during element wise addition")''
+    }
+#endif  // DEBUG
     result[i] = lhs[i] + rhs[i];
   }
   return result;
 }
 
+/**
+ * @brief perform element-wise substraction of two tensor
+ *
+ * subtract corresponding elemnt of two tensor and stores the result new tensor
+ *
+ * @tparam T type of element stored in the tensors
+ * @param lhs left hand side tensor
+ * @param rhs right hand side tensor
+ * @return new tensor containing the result of the substract
+ */
 template <typename T>
 [[nodiscard]] Storage<T, CPU> subtract(const Storage<T, CPU>& lhs,
                                        const Storage<T, CPU>& rhs) {
@@ -59,13 +85,34 @@ template <typename T>
   auto            shape = get_shape(lhs);
   Storage<T, CPU> result(shape);
 
+  if constexpr (DEBUG) {
+    std::cout << "[DEBUG] perform element-wise subtract. memory usage: "
+              << result.size() * sizeof(T) << " bytes\n";
+  }
+
   for (std::size_t i = 0; i < lhs.size(); ++i) {
+#if DEBUG
+    if (i >= lhs.size() || i >= rhs.size()) {
+      throw std::out_of_range("index of range during element-wise subtraction");
+    }
+#endif  // DEBUG
     result[i] = lhs[i] - rhs[i];
   }
 
   return result;
 }
 
+/**
+ * @brief perform element-wise multiplication two tensor
+ *
+ * multiply corresponding element of two tensor and store the result in a new
+ * tensor
+ *
+ * @tparam T type of element stored in the tensor
+ * @param lhs left-hand side tensor
+ * @param rhs right-hand side tensor
+ * @return new tensor containing the result of multiplication
+ */
 template <typename T>
 [[nodiscard]] Storage<T, CPU> multiply(const Storage<T, CPU>& lhs,
                                        const Storage<T, CPU>& rhs) {
@@ -77,12 +124,33 @@ template <typename T>
   auto            shape = get_shape(lhs);
   Storage<T, CPU> result(shape);
 
+  if constexpr (DEBUG) {
+    std::cout << "[DEBUG] perform element-wise multiplication, memory usage: "
+              << result.size() * sizeof(T) << " bytes\n";
+  }
+
   for (std::size_t i = 0; i < lhs.size(); ++i) {
+#if DEBUG
+    if (i >= lhs.size() || i >= rhs.size()) {
+      throw std::out_of_range(
+          "index out of range during element-wise multiplication");
+    }
+#endif  // DEBUG
     result[i] = lhs[i] * rhs[i];
   }
   return result;
 }
 
+/**
+ * @brief perform element-wise division of two tensor
+ *
+ * divide corresponding element of two tensor and store the result in new tensor
+ *
+ * @tparam T type of elements stored in the tensor
+ * @param lhs left hand side tensor
+ * @param rhs the right hand side tensor
+ * @return new tensor containing the result of the division
+ */
 template <typename T>
 [[nodiscard]] Storage<T, CPU> divide(const Storage<T, CPU>& lhs,
                                      const Storage<T, CPU>& rhs) {
@@ -94,7 +162,18 @@ template <typename T>
   auto            shape = get_shape(lhs);
   Storage<T, CPU> result(shape);
 
+  if constexpr (DEBUG) {
+    std::cout << "[DEBUG] perform element-wise division, memory usage: "
+              << result.size() * sizeof(T) << " bytes\n";
+  }
+
   for (std::size_t i = 0; i < lhs.size(); ++i) {
+#if DEBUG
+    if (i >= lhs.size() || i >= rhs.size()) {
+      throw std::out_of_range(
+          "index out of range during element wise division");
+    }
+#endif  // DEBUG
     if (rhs[i] == 0) {
       throw std::domain_error("division by zero during element-wise divide");
     }
@@ -103,6 +182,13 @@ template <typename T>
   return result;
 }
 
+/**
+ * @brief computing the sum of all sum in element tensor
+ *
+ * @tparam T type of elements stored in the tensor
+ * @param tensor input tensor
+ * @return sum of all elements in the tensor
+ */
 template <typename T>
 [[nodiscard]] T sum(const Storage<T, CPU>& tensor) {
   T result = 0;
@@ -112,6 +198,13 @@ template <typename T>
   return result;
 }
 
+/**
+ * @brief compute the mean of all elements in a tensor
+ *
+ * @tparam T type of elements stored in the tensor
+ * @param tensor input tensor
+ * @return mean of all elements in the tensor
+ */
 template <typename T>
 [[nodiscard]] double mean(const Storage<T, CPU>& tensor) {
   if (tensor.size() == 0) {
