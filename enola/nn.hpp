@@ -135,6 +135,41 @@ class NeuralNetwork {
     return current_layer_output;
   }
 
+  /**
+   * @brief compute loss between network output and the target
+   *
+   * this function calculate mean squared (MSE) loss, which measure the averange
+   * squared difference the predicted output and the target output
+   *
+   * the formula of MSE:
+   * \[
+   *   \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (\text{output}[i] -
+   * \text{target}[i])^2
+   * \]
+   *
+   * @param output network output vector
+   * @param target target output vector
+   * @return mean squared error loss
+   */
+  T compute_loss(const std::vector<T>& output,
+                 const std::vector<T>& target) const {
+    // validating output target vector have the same size
+    if (output.size() != target.size()) {
+      throw std::invalid_argument("output size does not match target size");
+    }
+
+    // initialize variable to accumulate total squared error
+    T loss = 0.0;
+    // iterating over each element in the output and target vector
+    for (size_t i = 0; i < output.size(); ++i) {
+      // compute the difference between predicted and target vakyes
+      T diff = output[i] - target[i];
+      loss += diff * diff;  // mean squared error
+    }
+    T mean_squared_error = loss / static_cast<T>(output.size());
+    return mean_squared_error;
+  }
+
  private:
   std::vector<size_t>
       layer_sizes_;  // size of each layer (input, hidden, output)
