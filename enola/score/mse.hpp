@@ -31,8 +31,10 @@ template <typename T>
 [[nodiscard]] double mse(
     const enola::tensor::Storage<T, enola::tensor::CPU>& predict,
     const enola::tensor::Storage<T, enola::tensor::CPU>& actual) {
+  // make sure input are numeric type
   static_assert(std::is_arithmetic_v<T>, "tensor element must be numeric");
 
+  // validating input size
   if (predict.size() == 0 || actual.size() == 0) {
     throw std::invalid_argument("input tensor mut not be empty");
   }
@@ -45,9 +47,10 @@ template <typename T>
   for (std::size_t i = 0; i < predict.size(); ++i) {
     double diff =
         static_cast<double>(predict[i]) - static_cast<double>(actual[i]);
-    sum_square_difference += diff * diff;
+    sum_square_difference += diff * diff; // square the difference
   }
 
+  // return the mean
   return sum_square_difference / predict.size();
 }
 

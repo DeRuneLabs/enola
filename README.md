@@ -14,6 +14,7 @@ currently including:
     - Swish
 - Score:
   - Mean Absolute Error
+  - Mean Square Error
 - Tensor:
   - Operation
   - Storage ( Currently Support on CPU Process )
