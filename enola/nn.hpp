@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "function/sigmoid.hpp"
+#include "score/mse.hpp"
 #include "tensor/tensor_storage.hpp"
 #include <random>
 #include <stdexcept>
@@ -136,38 +137,31 @@ class NeuralNetwork {
   }
 
   /**
-   * @brief compute loss between network output and the target
+   * @brief compute the loss between the network output and target
    *
-   * this function calculate mean squared (MSE) loss, which measure the averange
-   * squared difference the predicted output and the target output
+   * this function calculate the mean squared error using MSE function
    *
-   * the formula of MSE:
-   * \[
-   *   \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (\text{output}[i] -
-   * \text{target}[i])^2
-   * \]
+   * @param output the network's output vector (predicted value)
+   * @param target the target output vector (true value)
+   * @return computed MSE loss as scalar value
    *
-   * @param output network output vector
-   * @param target target output vector
-   * @return mean squared error loss
+   * @throws std::invalid_argument if the output and target vector have
+   * difference
    */
-  T compute_loss(const std::vector<T>& output,
-                 const std::vector<T>& target) const {
-    // validating output target vector have the same size
-    if (output.size() != target.size()) {
-      throw std::invalid_argument("output size does not match target size");
+  double compute_loss(const std::vector<T>& output,
+                      const std::vector<T>& target) const {
+    // convert output and target vector to tensor
+    std::vector<size_t>             shape = {output.size()};
+    tensor::Storage<T, tensor::CPU> output_tensor(shape);
+    tensor::Storage<T, tensor::CPU> target_tensor(shape);
+
+    for (size_t i = 0; i < output.size(); ++i) {
+      output_tensor[i] = output[i];
+      target_tensor[i] = target[i];
     }
 
-    // initialize variable to accumulate total squared error
-    T loss = 0.0;
-    // iterating over each element in the output and target vector
-    for (size_t i = 0; i < output.size(); ++i) {
-      // compute the difference between predicted and target vakyes
-      T diff = output[i] - target[i];
-      loss += diff * diff;  // mean squared error
-    }
-    T mean_squared_error = loss / static_cast<T>(output.size());
-    return mean_squared_error;
+    // use mse function to compute the loss
+    return enola::score::mse(output_tensor, target_tensor);
   }
 
  private:
