@@ -1,7 +1,7 @@
 #ifndef FUNCTION_ACTIVATION_ELU_HPP
 #define FUNCTION_ACTIVATION_ELU_HPP
 
-#include <cmath>
+#include "../../math/exp.hpp"
 #include <stdexcept>
 #include <vector>
 namespace enola {
@@ -45,7 +45,7 @@ std::vector<T> exponential_linear_unit(const std::vector<T>& input_vector,
     if (input_vector[i] > 0) {
       output_vector[i] = input_vector[i];  // f(x) = x for x > 0
     } else {
-      output_vector[i] = alpha * (std::exp(input_vector[i]) - 1);
+      output_vector[i] = alpha * (enola::math::exp(input_vector[i]) - 1);
     }
   }
 

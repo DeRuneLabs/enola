@@ -1,19 +1,42 @@
 #ifndef FUNCTION_SIGMOID_HPP
 #define FUNCTION_SIGMOID_HPP
 
+#include "../math/exp.hpp"
 #include <algorithm>
 #include <cmath>
 #include <type_traits>
 #include <vector>
 
-#ifdef _WIN32
-#include <cstdlib>
-#include <intrin.h>
-#define WINDOWS_PLATFORM
-#endif
-
 namespace enola {
 namespace function {
+
+/**
+ * @brief applie the sigmoid activation function to scalar value
+ *
+ * function formula:
+ * \[
+ * f(x) = \frac{1}{1 + e^{-x}}
+ * \]
+ *
+ * @tparam T floating point type
+ * @param xinput scalar value
+ * @return sigmoid-transform value of the input
+ */
+template <typename T>
+[[nodiscard]] inline T sigmoid(T x) {
+  static_assert(std::is_floating_point_v<T>,
+                "sigmoid only support floating-point types");
+
+  if (x > T(100)) {
+    return T(1.0);
+  }
+  if (x < T(-100)) {
+    return T(0.0);
+  }
+
+  return T(1.0) / (T(1.0) + enola::math::exp(-x));
+}
+
 /**
  * @brief applies the sigmoid activation function element-wise to vector
  *
@@ -47,35 +70,11 @@ inline std::vector<T> sigmoid(const std::vector<T>& m1) {
 
   // pre-allocate output vector with the same size as the input vector
   std::vector<T> output(m1.size());
-  // apply sigmoid function to each element of the input vector
-  std::transform(m1.begin(),
-                 m1.end(),        // input range
-                 output.begin(),  // output range
-                 [](T x) -> T {   // lambda function to compute sigmoid
-                                  // try to avoiding overflow
-                   if (x > T(100)) {
-                     return T(1.0);
-                   }
-                   // try to avoiding underflow
-                   if (x < T(-100)) {
-                     return T(0.0);
-                   }
-#ifdef WINDOWS_PLATFORM
-                  // windows platform using fabs for float number value
-                  // to make sure consistent behaviour on platform
-                   if (std::fabs(x) < std::numeric_limits<T>::epsilon()) {
-                    return T(0.5); // approximate to near zero
-                   }
 
-                   #ifdef __AVX__
-                    __m256 vx = _mm256_set_set1_ps(static_cast<float>(x));
-                    __m256 vexp = _mm256_exp_ps(vx); // avx exp intrisc
-                    return T(1.0) / (T(1.0) + static_cast<T>(__m256_cvtss_f32(vexp)));
-                   #endif
-#endif
-                   return T(1.0) / (T(1.0) + std::exp(-x));
-                 });
-  return output;  // return the transformed vector
+  std::transform(m1.begin(), m1.end(), output.begin(), [](T x) -> T {
+    return sigmoid(x);
+  });
+  return output;
 }
 }  // namespace function
 }  // namespace enola

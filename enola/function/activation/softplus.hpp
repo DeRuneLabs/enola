@@ -1,6 +1,8 @@
 #ifndef FUNCTION_ACTIVATION_SOFTPLUS_HPP
 #define FUNCTION_ACTIVATION_SOFTPLUS_HPP
 
+#include "../../math/exp.hpp"
+#include "../../math/log.hpp"
 #include <cmath>
 #include <cstddef>
 #include <memory>
@@ -32,7 +34,7 @@ std::vector<T> softplus(const std::vector<T>& input) {
 
   // apply the softplus function element-wise
   for (size_t i = 0; i < input.size(); ++i) {
-    result[i] = std::log(1 + std::exp(input[i]));
+    result[i] = enola::math::log(1 + enola::math::exp(input[i]));
   }
   return result;
 }
@@ -61,7 +63,7 @@ std::unique_ptr<std::vector<T>> softplus(const T* input, size_t size) {
   // create result vector and apply the softplus function
   auto result = std::make_unique<std::vector<T>>(size);
   for (size_t i = 0; i < size; ++i) {
-    (*result)[i] = std::log(1 + std::exp(input[i]));
+    (*result)[i] = enola::math::log(1 + enola::math::exp(input[i]));
   }
   return result;
 }

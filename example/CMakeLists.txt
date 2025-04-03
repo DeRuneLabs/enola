@@ -3,7 +3,7 @@ set(COMMON_INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/enola/function/activation
     ${PROJECT_SOURCE_DIR}/enola/score ${PROJECT_SOURCE_DIR}/enola/activation)
 
-file(GLOB EXAMPLE_SOURCES "*.cc" "neural_network/*.cc" "ops/*.cc" "score/*.cc")
+file(GLOB EXAMPLE_SOURCES "*.cc" "neural_network/*.cc" "ops/*.cc" "score/*.cc" "math/*.cc")
 
 foreach(SOURCE_FILE IN LISTS EXAMPLE_SOURCES)
   get_filename_component(TARGET_NAME ${SOURCE_FILE} NAME_WE)

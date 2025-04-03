@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../enola/function/activation/elu.hpp"
-#include <stdexcept>
+#include <cmath>
 
 TEST(ELUTest, PositiveValueOnly) {
   std::vector<float> input           = {1.0f, 2.5f, 3.0f};
