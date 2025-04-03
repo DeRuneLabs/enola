@@ -7,12 +7,23 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(enola_headers INTERFACE)
 target_include_directories(
-  enola_headers INTERFACE ${PROJECT_SOURCE_DIR}/enola/tensor
-                          ${PROJECT_SOURCE_DIR}/enola/function)
+  enola_headers
+  INTERFACE ${PROJECT_SOURCE_DIR}/enola/tensor
+            ${PROJECT_SOURCE_DIR}/enola/function
+            ${PROJECT_SOURCE_DIR}/enola/score ${PROJECT_SOURCE_DIR}/enola/ops)
 
 find_package(GTest REQUIRED)
 add_library(gtest_headers INTERFACE)
 target_include_directories(gtest_headers INTERFACE {GTEST_INCLUDE_DIRS})
 
-add_subdirectory(example)
-add_subdirectory(test)
+# cmake -S . -B build -DBUILD_EXAMPLES=ON
+option(BUILD_EXAMPLE "build example program" OFF)
+
+if(BUILD_EXAMPLE)
+  add_subdirectory(example)
+endif()
+
+option(TEST_ENOLA "test enola library" ON)
+if(TEST_ENOLA)
+  add_subdirectory(test)
+endif()
