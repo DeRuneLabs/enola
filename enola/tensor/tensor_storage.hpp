@@ -108,9 +108,18 @@ struct Storage<T, CPU> {
   template <typename ShapeType>
   explicit Storage(const ShapeType& shape) {
     std::size_t total_elements = num_elements(shape);
+    // allowing zero tensor (total_elements == 0)
     if (total_elements == 0) {
-      throw std::invalid_argument("shape must have non-zero dimensions");
+      data.clear();  // clear storage
+      return;
     }
+    // validating all dimension are non-zero
+    for (const auto& dim : shape) {
+      if (dim == 0) {
+        throw std::invalid_argument("shape must have non-zero dimension");
+      }
+    }
+
     data.resize(total_elements, T{});
   }
 

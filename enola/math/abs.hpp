@@ -17,7 +17,7 @@ namespace math {
  * @return absolute value of the input value
  */
 template <typename T>
-[[nodiscard]] constexpr T abs(T value) noexcept {
+[[nodiscard]] constexpr auto abs(T value) noexcept {
   // make sure T was numeric data tpe
   static_assert(std::is_arithmetic_v<T>, "element type must be numeric type");
 
