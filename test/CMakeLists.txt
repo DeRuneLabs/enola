@@ -10,6 +10,7 @@ add_executable(
   ops_deep_copy_test.cc
   math_abs_test.cc
   math_ceil_test.cc
+  math_exp_test.cc
   nn_test.cc
   tensor_tensor_storage_test.cc
   tensor_ops_test.cc score_mae_test.cc)

@@ -13,6 +13,9 @@ namespace math {
  * this function calculating using taylor series exp
  * e^x = 1 + x + x ^ 2 / 2! + x ^ 3 / 3! + ...
  *
+ * computation will be stopping when the contribution of the current term become negligible
+ * or when the max number of iterations is reached
+ *
  * @tparam T floating point type
  * @param x input value
  * @return result of e^x
@@ -26,7 +29,7 @@ template <typename T>
   // handle numerical for extreme value input
   if (x > T(80)) {
     // preventing overflow for positive values
-    return std::numeric_limits<T>::max(); 
+    return std::numeric_limits<T>::infinity();
   }
   if (x < T(-80)) {
     // prevent underflow for large negative values
@@ -39,20 +42,20 @@ template <typename T>
   constexpr int max_iteration =
       200;  // max iteration to prevent infinite looping
 
-  T result    = 1.0;  // start with the first term of series
-  T term      = 1.0;  // current term in the series
-  T factorial = 1.0;
+  // constant for taylor series approximation
+  T result = T{1}; // start with the first term of the series
+  T term   = T{1}; // current term in the series
 
   for (int i = 1; i < max_iteration; ++i) {
-    factorial *= i;                 // compute factorial incrementally
-    term *= x / static_cast<T>(i);  // update the term
-    result += term;                 // add the term to the result
+    term *= x / T(i); // update the term: term *= x / i
+    result += term; // add the term to the result
 
-    // stop if term become negligible
-    if (enola::math::abs(term) < epsilon) {
+    // stop if the term becomes negligible
+    if (enola::math::abs(term) < epsilon * enola::math::abs(result)) {
       break;
     }
   }
+
   return result;
 }
 }  // namespace math
