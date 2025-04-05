@@ -50,8 +50,10 @@ template <typename T>
   // make sure T is numeric type
   static_assert(std::is_arithmetic_v<T>, "element type must be numeric type");
 
+  // create new tensor with same shape as the input tensors
   enola::tensor::Storage<T, enola::tensor::CPU> result(input);
 
+  // using iterator for traversal, transformation
   std::transform(result.begin(), result.end(), result.begin(), [](T value) {
     return abs(value);
   });

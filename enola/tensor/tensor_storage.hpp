@@ -106,15 +106,16 @@ struct Storage<T, CPU> {
    * @param shape the shape of the tensor
    */
   template <typename ShapeType>
-  explicit Storage(const ShapeType& shape) {
-    std::size_t total_elements = num_elements(shape);
+  explicit Storage(const ShapeType& shape)
+      : shape_(shape.begin(), shape.end()) {
+    std::size_t total_elements = num_elements(shape_);
     // allowing zero tensor (total_elements == 0)
     if (total_elements == 0) {
       data.clear();  // clear storage
       return;
     }
     // validating all dimension are non-zero
-    for (const auto& dim : shape) {
+    for (const auto& dim : shape_) {
       if (dim == 0) {
         throw std::invalid_argument("shape must have non-zero dimension");
       }
@@ -199,17 +200,35 @@ struct Storage<T, CPU> {
     return data.size();
   }
 
+  /**
+   * @brief get shape of the tensor
+   *
+   * @return const reference to the shape vector
+   */
+  [[nodiscard]] constexpr const std::vector<std::size_t>& shape()
+      const noexcept {
+    return shape_;
+  }
+
+  /**
+   * @brief resize the tensor to new shape
+   *
+   * @tparam ShapeType type of the new shape
+   * @param new_shape new shape of the tensor
+   */
   template <typename ShapeType>
   void resize(const ShapeType& new_shape) {
-    std::size_t new_size = num_elements(new_shape);
+    shape_.assign(new_shape.begin(), new_shape.end());
+    std::size_t new_size = num_elements(shape_);
     if (new_size == 0) {
-      throw std::invalid_argument("new shape must have non-zero dimensions");
+      throw std::invalid_argument("new shape must have non-zero dimension");
     }
     data.resize(new_size, T{});
   }
 
  private:
-  storage_type data;  // the underlying storage container
+  std::vector<std::size_t> shape_;  // shape of the tensor
+  storage_type             data;    // the underlying storage container
 };
 
 }  // namespace tensor
