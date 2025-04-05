@@ -2,6 +2,7 @@
 #define MATH_ABS_HPP
 
 #include "../tensor/tensor_storage.hpp"
+#include <algorithm>
 #include <type_traits>
 
 namespace enola {
@@ -49,21 +50,14 @@ template <typename T>
   // make sure T is numeric type
   static_assert(std::is_arithmetic_v<T>, "element type must be numeric type");
 
-  // create new storage object with the same shape as the input tensor
-  // wrap size of the input tensor in std::vector to represent shape
-  // this make sure compatiblity with the storage constructor, which aexpect a
-  // shape
-  std::vector<std::size_t>                      shape = {input.size()};
-  enola::tensor::Storage<T, enola::tensor::CPU> result(shape);
+  enola::tensor::Storage<T, enola::tensor::CPU> result(input);
 
-  // iterate over element in input tensor
-  // compute the absolute value of each element using abs_value function
-  for (std::size_t i = 0; i < input.size(); ++i) {
-    result[i] = abs(input[i]);
-  }
+  std::transform(result.begin(), result.end(), result.begin(), [](T value) {
+    return abs(value);
+  });
+
   return result;
 }
-
 }  // namespace math
 }  // namespace enola
 
