@@ -6,7 +6,7 @@
 TEST(BinaryStepTest, HandleMixedValue) {
   std::vector<double> input    = {-1.2, 0, 2, 1.45, -3.7, 0.3};
   std::vector<int>    expected = {0, 1, 1, 1, 0, 1};
-  std::vector<int>    result   = enola::function::binary_step(input);
+  auto result = enola::function::to_int_vector(enola::function::binary_step(input));
 
   EXPECT_EQ(result, expected);
 }
@@ -15,7 +15,7 @@ TEST(BinaryStepTest, HandleAllNonNegativeValue) {
   std::vector<float> input    = {0.0f, 1.5f, 3.7f, 10.0f};
   std::vector<int>   expected = {1, 1, 1, 1};
 
-  std::vector<int> result = enola::function::binary_step(input);
+  auto result = enola::function::to_int_vector(enola::function::binary_step(input));
   EXPECT_EQ(result, expected);
 }
 
