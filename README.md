@@ -12,19 +12,22 @@ currently including:
     - Softplus
     - Squareplus
     - Swish
+- Operation:
+  - Deep Copy
 - Score:
   - Mean Absolute Error
   - Mean Square Error
 - Tensor:
   - Operation
   - Storage ( Currently Support on CPU Process )
+  - Tensor View
 
 ## basic usage
 
 **Simple neural Network**
 
 ```cpp
-#include "../../enola/nn.hpp"
+#include "<enola/nn.hpp>"
 #include <exception>
 #include <iostream>
 
