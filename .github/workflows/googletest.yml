@@ -21,7 +21,7 @@ jobs:
           git clone https://github.com/KhronosGroup/OpenCL-Headers
           cd OpenCL-Headers
           cmake -S . -B build
-          cmake --build build --target install
+          sudo cmake --build build --target install
 
       - name: check opencl
         run: |
