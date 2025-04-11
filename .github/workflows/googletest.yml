@@ -13,6 +13,23 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v4
 
+      - name: opencl ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ocl-icd-opencl-dev opencl-headers
+      
+      - name: install opencl macos
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew update
+          brew install ocl-icd opencl-headers
+
+      - name: check opencl
+        run: |
+          ls /usr/include/CL || ls /usr/local/include/CL
+          ls /usr/lib | grep libOpenCL || ls /usr/local/lib | grep libOpenCL
+
       - name: verify enola test
         run: |
           chmod +x ./test/run_test
