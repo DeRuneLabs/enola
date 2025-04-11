@@ -22,12 +22,6 @@ class TensorView {
    * @brief alias for type element stored in tensor
    */
   using element_type = T;
-  /**
-   * @brief alias for underlying storage type
-   *
-   * this refering to `storage` class, which manage the actual data buffer
-   */
-  using storage_type = enola::tensor::Storage<T, enola::tensor::CPU>;
 
   /**
    * @brief construct TensorView object
@@ -43,10 +37,11 @@ class TensorView {
    * @throws std::out_of_range if the view exceeds the bounds of the underlying
    * storage
    */
-  TensorView(storage_type&                   storage,
+  template <typename StorageType>
+  TensorView(StorageType&                    storage,
              const std::vector<std::size_t>& shape,
              const std::vector<std::size_t>& strides)
-      : storage_(storage), shape_(shape), strides_(strides) {
+      : storage_(&storage), shape_(shape), strides_(strides) {
     // make sure that number of dimension in shape matching number of strides
     if (shape.size() != strides.size()) {
       throw std::invalid_argument("shape and strides must have the same size");
@@ -69,10 +64,7 @@ class TensorView {
    */
   [[nodiscard]] constexpr T& operator()(
       const std::vector<std::size_t>& indices) {
-    // computing flat index in the underlying storage
-    std::size_t flat_index = compute_flat_index(indices);
-    // return element at computed flat index
-    return storage_[flat_index];
+    return (*storage_)[compute_flat_index(indices)];
   }
 
   /**
@@ -89,10 +81,7 @@ class TensorView {
    */
   [[nodiscard]] constexpr const T& operator()(
       const std::vector<std::size_t>& indices) const {
-    // computing the flat index in the underlying storage
-    std::size_t flat_index = compute_flat_index(indices);
-    // return element at the compute flat index
-    return storage_[flat_index];
+    return (*storage_)[compute_flat_index(indices)];
   }
 
   /**
@@ -123,7 +112,7 @@ class TensorView {
    *
    * TensorView does not own this storage, simply reference it
    */
-  storage_type& storage_;
+  enola::tensor::Storage<T, enola::tensor::CPU>* storage_;
   /**
    * @brief the shape of the view
    *
@@ -156,7 +145,7 @@ class TensorView {
       max_index += (shape_[i] - 1) * strides_[i];
     }
     // checking if the max index is within the bounds of the underlying storage
-    if (max_index >= storage_.size()) {
+    if (max_index >= storage_->size()) {
       throw std::out_of_range(
           "view exceed the bound of the underlying storage");
     }

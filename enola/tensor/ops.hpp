@@ -21,8 +21,14 @@ namespace tensor {
  */
 template <typename T>
 [[nodiscard]] std::vector<std::size_t> get_shape(
-    const Storage<T, CPU>& storage) {
+    const enola::tensor::Storage<T, enola::tensor::CPU>& storage) {
   // shape is inferred from the size of the tensor
+  return {storage.size()};
+}
+
+template <typename T>
+[[nodiscard]] std::vector<std::size_t> get_shape(
+    const enola::tensor::Storage<T, enola::tensor::GPU>& storage) {
   return {storage.size()};
 }
 
@@ -36,16 +42,17 @@ template <typename T>
  * @param rhs the right-hand side tensor
  * @return new tensor containing the reuslt of the addition
  */
-template <typename T>
-[[nodiscard]] Storage<T, CPU> add(const Storage<T, CPU>& lhs,
-                                  const Storage<T, CPU>& rhs) {
+template <typename T, typename Device>
+[[nodiscard]] enola::tensor::Storage<T, Device> add(
+    const enola::tensor::Storage<T, Device>& lhs,
+    const enola::tensor::Storage<T, Device>& rhs) {
   if (lhs.size() != rhs.size()) {
     throw std::invalid_argument(
         "tensor must have the same size for element-wise");
   }
 
-  auto            shape = get_shape(lhs);
-  Storage<T, CPU> result(shape);
+  auto                              shape = get_shape(lhs);
+  enola::tensor::Storage<T, Device> result(shape);
 
   if constexpr (DEBUG) {
     std::cout << "[DEBUG] perform element-wise addition memory usage: "
@@ -74,16 +81,17 @@ template <typename T>
  * @param rhs right hand side tensor
  * @return new tensor containing the result of the substract
  */
-template <typename T>
-[[nodiscard]] Storage<T, CPU> subtract(const Storage<T, CPU>& lhs,
-                                       const Storage<T, CPU>& rhs) {
+template <typename T, typename Device>
+[[nodiscard]] enola::tensor::Storage<T, CPU> subtract(
+    const enola::tensor::Storage<T, Device>& lhs,
+    const enola::tensor::Storage<T, Device>& rhs) {
   if (lhs.size() != rhs.size()) {
     throw std::invalid_argument(
         "tensor must have the same size for element-wise");
   }
 
-  auto            shape = get_shape(lhs);
-  Storage<T, CPU> result(shape);
+  auto                              shape = get_shape(lhs);
+  enola::tensor::Storage<T, Device> result(shape);
 
   if constexpr (DEBUG) {
     std::cout << "[DEBUG] perform element-wise subtract. memory usage: "
@@ -113,16 +121,17 @@ template <typename T>
  * @param rhs right-hand side tensor
  * @return new tensor containing the result of multiplication
  */
-template <typename T>
-[[nodiscard]] Storage<T, CPU> multiply(const Storage<T, CPU>& lhs,
-                                       const Storage<T, CPU>& rhs) {
+template <typename T, typename Device>
+[[nodiscard]] enola::tensor::Storage<T, Device> multiply(
+    const enola::tensor::Storage<T, Device>& lhs,
+    const enola::tensor::Storage<T, Device>& rhs) {
   if (lhs.size() != rhs.size()) {
     throw std::invalid_argument(
         "tensor must have the same size for element-wise");
   }
 
-  auto            shape = get_shape(lhs);
-  Storage<T, CPU> result(shape);
+  auto                              shape = get_shape(lhs);
+  enola::tensor::Storage<T, Device> result(shape);
 
   if constexpr (DEBUG) {
     std::cout << "[DEBUG] perform element-wise multiplication, memory usage: "
@@ -151,16 +160,17 @@ template <typename T>
  * @param rhs the right hand side tensor
  * @return new tensor containing the result of the division
  */
-template <typename T>
-[[nodiscard]] Storage<T, CPU> divide(const Storage<T, CPU>& lhs,
-                                     const Storage<T, CPU>& rhs) {
+template <typename T, typename Device>
+[[nodiscard]] enola::tensor::Storage<T, Device> divide(
+    const enola::tensor::Storage<T, Device>& lhs,
+    const enola::tensor::Storage<T, Device>& rhs) {
   if (lhs.size() != rhs.size()) {
     throw std::invalid_argument(
         "tensor must have the same size for element-wise");
   }
 
-  auto            shape = get_shape(lhs);
-  Storage<T, CPU> result(shape);
+  auto                              shape = get_shape(lhs);
+  enola::tensor::Storage<T, Device> result(shape);
 
   if constexpr (DEBUG) {
     std::cout << "[DEBUG] perform element-wise division, memory usage: "
@@ -189,8 +199,8 @@ template <typename T>
  * @param tensor input tensor
  * @return sum of all elements in the tensor
  */
-template <typename T>
-[[nodiscard]] T sum(const Storage<T, CPU>& tensor) {
+template <typename T, typename Device>
+[[nodiscard]] T sum(const enola::tensor::Storage<T, Device>& tensor) {
   T result = 0;
   for (std::size_t i = 0; i < tensor.size(); ++i) {
     result += tensor[i];
@@ -205,8 +215,8 @@ template <typename T>
  * @param tensor input tensor
  * @return mean of all elements in the tensor
  */
-template <typename T>
-[[nodiscard]] double mean(const Storage<T, CPU>& tensor) {
+template <typename T, typename Device>
+[[nodiscard]] double mean(const enola::tensor::Storage<T, Device>& tensor) {
   if (tensor.size() == 0) {
     throw std::invalid_argument("cannot compute mean of any empty tensor");
   }
