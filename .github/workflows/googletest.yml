@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
     
     steps:
       - name: checkout repo
@@ -18,12 +18,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ocl-icd-opencl-dev opencl-headers
-      
-      - name: install opencl macos
-        if: matrix.os == 'macos-latest'
-        run: |
-          brew update
-          brew install ocl-icd opencl-headers
 
       - name: check opencl
         run: |
