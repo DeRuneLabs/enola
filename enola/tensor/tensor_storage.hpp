@@ -1,7 +1,9 @@
 #ifndef TENSOR_TENSOR_STORAGE_HPP
 #define TENSOR_TENSOR_STORAGE_HPP
 
+#include "../utils/gpu_init.hpp"
 #include <cstddef>
+#include <memory>
 #include <stdexcept>
 #include <type_traits>
 #include <vector>
@@ -15,6 +17,14 @@ namespace tensor {
  * itended for execution in cpu
  */
 struct CPU {};
+
+/**
+ * @brief represent gpu device type
+ *
+ * this struct serve tag to indicate that storage or operating are intended for
+ * execution on the GPU using OpenCL
+ */
+struct GPU {};
 
 /**
  * @brief compute the total number of element in a tensor based on its shape
@@ -229,6 +239,115 @@ struct Storage<T, CPU> {
  private:
   std::vector<std::size_t> shape_;  // shape of the tensor
   storage_type             data;    // the underlying storage container
+};
+
+/**
+ * @brief specialization of `Storage` for GPU device
+ *
+ * this specialization implementation tensor storage for the GPU device using
+ * opencl, it manage memory allocation and deallocation on the GPU and provide
+ * access to the underlying opencl buffer
+ *
+ * @tparam T type of element stored in the tensor
+ */
+template <typename T>
+struct Storage<T, GPU> {
+  /**
+   * @brief make sure that element type is trivially copyable
+   *
+   * tensor element must be trivally copyable to make sure compatibility with
+   * GPU memory operations
+   */
+  static_assert(std::is_trivially_copyable_v<T>,
+                "element type must be trivially copyable");
+
+  // type of element stored in the tensor
+  using element_type = T;
+
+  /**
+   * @brief construct tensor stroage object with the given shape
+   *
+   * initialize storage with size equal to the total number of element in the
+   * tensor, as determine by the shape, allocate memory on the GPU
+   *
+   * @tparam ShapeType of the shape
+   * @param shape the shape of the tensor
+   */
+  template <typename ShapeType>
+  explicit Storage(const ShapeType& shape) : shape_(convert_to_vector(shape)) {
+    std::size_t total_elements = num_elements(shape_);
+    if (total_elements == 0) {
+      throw std::invalid_argument("shape must have non-zero dimension");
+    }
+
+    try {
+      // initialize GPU
+      gpu_init_ = std::make_unique<enola::utils::GPUInit>();
+      // get opencl context
+      cl_context context = gpu_init_->getContext();
+      // get opencl device
+      cl_device_id device_id = gpu_init_->getDeviceID();
+
+      cl_int err;
+      buffer_ = clCreateBuffer(context,
+                               CL_MEM_READ_WRITE,
+                               sizeof(T) * total_elements,
+                               nullptr,
+                               &err);
+      if (err != CL_SUCCESS) {
+        throw std::runtime_error("failed to allocate GPU memory");
+      }
+    } catch (const std::exception& error) {
+      throw std::runtime_error("gpu initialization fail: " +
+                               std::string(error.what()));
+    }
+  }
+
+  /**
+   * @brief destructor release GPU resource
+   *
+   * make sure proper cleanup of the opencl buffer to avoid memory leak problem
+   */
+  ~Storage() {
+    if (buffer_) {
+      clReleaseMemObject(buffer_);  // release opencl buffer
+    }
+  }
+
+  /**
+   * @brief retrieve opencl buffer objec5
+   *
+   * @return opencl buffer associated with tensor storage
+   */
+  [[nodiscard]] cl_mem getBuffer() const noexcept { return buffer_; }
+
+  /**
+   * @brief return total number of element in the storage
+   *
+   * @return size of the storage
+   */
+  [[nodiscard]] constexpr std::size_t size() const noexcept {
+    return num_elements(shape_);
+  }
+
+  /**
+   * @brief retrieve shape of the tensor
+   *
+   * @return const reference to the shape vector
+   */
+  [[nodiscard]] constexpr const std::vector<std::size_t>& shape()
+      const noexcept {
+    return shape_;
+  }
+
+ private:
+  template <typename ShapeType>
+  static std::vector<std::size_t> convert_to_vector(const ShapeType& shape) {
+    return std::vector<std::size_t>(shape.begin(), shape.end());
+  }
+  std::vector<std::size_t>               shape_;
+  cl_mem                                 buffer_ = nullptr;
+  std::unique_ptr<enola::utils::GPUInit> gpu_init_;
 };
 
 }  // namespace tensor

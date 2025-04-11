@@ -22,7 +22,6 @@ jobs:
       - name: check opencl
         run: |
           ls /usr/include/CL || ls /usr/local/include/CL
-          ls /usr/lib | grep libOpenCL || ls /usr/local/lib | grep libOpenCL
 
       - name: verify enola test
         run: |

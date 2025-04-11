@@ -90,3 +90,15 @@ TEST(TensorStorageTest, ResizeStorage) {
   std::vector<std::size_t> invalid_shape = {0, 4};
   EXPECT_THROW(storage.resize(invalid_shape), std::invalid_argument);
 }
+
+TEST(StorageTestGPU, VectorShape) {
+#ifdef GPU_SUPPORT_AVAILABLE
+  std::vector<std::size_t>                          shape = {2, 3};
+  enola::tensor::Storage<float, enola::tensor::GPU> storage(shape);
+
+  EXPECT_EQ(storage.size(), 6);
+  EXPECT_EQ(storage.shape(), shape);
+#else
+  GTEST_SKIP() << "gpu not support opencl";
+#endif
+}

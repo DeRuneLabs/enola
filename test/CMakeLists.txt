@@ -26,6 +26,24 @@ target_include_directories(
           ${PROJECT_SOURCE_DIR}/enola/function
           ${PROJECT_SOURCE_DIR}/enola/function/activation)
 
+find_package(OpenCL REQUIRED)
+
+if(OpenCL_FOUND)
+  message(
+    STATUS "openCL found: including OpenCL headers and linking OpenCL library")
+  target_include_directories(run_tests PRIVATE ${OpenCL_INCLUDE_DIRS})
+  target_link_libraries(run_tests PRIVATE ${OpenCL_LIBRARIES})
+else()
+  message(
+    FATAL_ERROR "opencl not found: please install OpenCL development libraries")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL
+                                           "Clang")
+  target_compile_options(run_tests PRIVATE -Wno-non-template-friend
+                                           -Wno-unused-result)
+endif()
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL
                                            "Clang")
   target_compile_options(run_tests PRIVATE -Wno-non-template-friend
