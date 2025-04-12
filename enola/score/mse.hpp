@@ -28,9 +28,8 @@ namespace score {
  * sizes.
  */
 template <typename T>
-[[nodiscard]] double mse(
-    const enola::tensor::Storage<T, enola::tensor::CPU>& predict,
-    const enola::tensor::Storage<T, enola::tensor::CPU>& actual) {
+[[nodiscard]] double mse(const enola::tensor::DynamicStorage<T>& predict,
+                         const enola::tensor::DynamicStorage<T>& actual) {
   // make sure input are numeric type
   static_assert(std::is_arithmetic_v<T>, "tensor element must be numeric");
 
@@ -47,7 +46,7 @@ template <typename T>
   for (std::size_t i = 0; i < predict.size(); ++i) {
     double diff =
         static_cast<double>(predict[i]) - static_cast<double>(actual[i]);
-    sum_square_difference += diff * diff; // square the difference
+    sum_square_difference += diff * diff;  // square the difference
   }
 
   // return the mean

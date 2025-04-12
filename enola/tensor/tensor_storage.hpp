@@ -315,6 +315,48 @@ struct Storage<T, GPU> {
     }
   }
 
+  [[nodiscard]] T operator[](std::size_t i) const noexcept(false) {
+#ifdef DEBUG
+    if (i >= size()) {
+      throw std::out_of_range("index out of range");
+    }
+#endif  // DEBUG
+    T                value;
+    cl_int           err;
+    cl_command_queue queue = gpu_init_->getCommandQueue();
+    err                    = clEnqueueReadBuffer(queue,
+                              buffer_,
+                              CL_TRUE,
+                              i * sizeof(T),
+                              sizeof(T),
+                              &value,
+                              0,
+                              nullptr,
+                              nullptr);
+    if (err != CL_SUCCESS) {
+      throw std::runtime_error("failed to read from GPU memory");
+    }
+    return value;
+  }
+
+  [[nodiscard]] T& operator[](std::size_t i) noexcept(false) {
+    #ifdef DEBUG
+    if (i >= size()) {
+      throw std::out_of_range("index out of range");
+    }
+    #endif // DEBUG
+    
+static T temp_value;
+    cl_int err;
+    cl_command_queue queue = gpu_init_->getCommandQueue();
+    err = clEnqueueReadBuffer(queue, buffer_, CL_TRUE, i * sizeof(T), sizeof(T), &temp_value, 0, nullptr, nullptr);
+    if (err != CL_SUCCESS) {
+      throw std::runtime_error("failed to read from GPU memory");
+    }
+    
+    return temp_value;
+  }
+
   /**
    * @brief retrieve opencl buffer objec5
    *

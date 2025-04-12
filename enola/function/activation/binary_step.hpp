@@ -65,7 +65,9 @@ enola::tensor::TensorView<T> binary_step(
   }
 
   // create new storage object to hold the result
-  enola::tensor::Storage<T, enola::tensor::CPU> result_storage(input.shape());
+  auto* input_storage = &input.storage();
+  auto  result_storage =
+      std::make_unique<enola::tensor::DynamicStorage<T>>(input.shape());
 
   // apply binary step function for each element
   for (std::size_t i = 0; i < result_storage.size(); ++i) {
@@ -78,7 +80,7 @@ enola::tensor::TensorView<T> binary_step(
 }
 
 template <typename Container>
-std::vector<int> to_int_vector(const Container& container) {
+[[nodiscard]] std::vector<int> to_int_vector(const Container& container) {
   std::vector<int> result;
   result.reserve(container.size());
   for (const auto& value : container) {

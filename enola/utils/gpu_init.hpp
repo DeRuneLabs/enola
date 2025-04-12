@@ -26,10 +26,45 @@ class GPUInit {
   /**
    * @brief constructor intialize the opencl environment
    *
-   * call private `initOpenCL()` method to set opencl platform, device, and
-   * context
+   * initialize the opencl platform, device, context, and command queue, the
+   * constructor perform the following steps
+   * - retrieve the first available opencl platform
+   * - select the first available GPU device from the platform
+   * - create an opencl context for the selected GPU device
+   * - create an opencl command for executing operation on GPU
+   *
+   * @throws std::runtime_error if any step in the initialization process fails
    */
-  GPUInit() { initOpenCL(); }
+  GPUInit() {
+    cl_int err;
+
+    // retrieve the first available opencl platform
+    err = clGetPlatformIDs(1, &platform_id, nullptr);
+    if (err != CL_SUCCESS) {
+      throw std::runtime_error("failed to get opencl platform");
+    }
+
+    // retrieve the first available GPU device from the platform
+    err =
+        clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_GPU, 1, &device_id, nullptr);
+    if (err != CL_SUCCESS) {
+      throw std::runtime_error("failed to get opencl device");
+    }
+
+    // create an opencl context for the selected GPU device
+    context = clCreateContext(nullptr, 1, &device_id, nullptr, nullptr, &err);
+    if (err != CL_SUCCESS) {
+      throw std::runtime_error("failed to create opencl context");
+    }
+
+    // create an opencl command queue for executing operations on the GPU
+    const cl_queue_properties properties[] = {0};
+    command_queue_                         = clCreateCommandQueueWithProperties(
+        context, device_id, properties, &err);
+    if (err != CL_SUCCESS) {
+      throw std::runtime_error("failed to create opencl command queue");
+    }
+  }
 
   /**
    * @brief destructor release opencl resource
@@ -62,17 +97,35 @@ class GPUInit {
    */
   cl_device_id getDeviceID() const { return device_id; }
 
+  /**
+   * @brief retrieve opencl command queue
+   *
+   * @return the opencl command queue associated with GPU
+   */
+  [[nodiscard]] cl_command_queue getCommandQueue() const noexcept {
+    return command_queue_;
+  }
+
  private:
-  cl_platform_id platform_id = nullptr;  // opencl platform id
-  cl_device_id   device_id   = nullptr;  // opencl device id
-  cl_context     context     = nullptr;  // opencl context for device
+  cl_platform_id   platform_id    = nullptr;  // opencl platform id
+  cl_device_id     device_id      = nullptr;  // opencl device id
+  cl_context       context        = nullptr;  // opencl context for device
+  cl_command_queue command_queue_ = nullptr;  // opencl command queue
 
   /**
    * @brief initialize opencl environment
    *
+   * queries available opencl platform and device, select te first GPU device,
+   * and create an opencl context for the selected device, this method is not
+   * currently used in the constructor but can be reused for more complex
+   * initialization logic
+   *
    * - queries available opencl platform
    * - iterate through platform to find GPU device
    * - create opencl context for the selected GPU device
+   *
+   * @throws std::runtime_error if not opencl platform or GPU device is found,
+   * or if context creation is fails
    */
   void initOpenCL() {
     cl_uint platform_count = 0;

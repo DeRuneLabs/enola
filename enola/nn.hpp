@@ -6,6 +6,7 @@
 #include "function/sigmoid.hpp"
 #include "score/mse.hpp"
 #include "tensor/tensor_storage.hpp"
+#include <memory>
 #include <random>
 #include <stdexcept>
 #include <utility>
@@ -35,6 +36,16 @@ template <typename T>
  */
 class NeuralNetwork {
  public:
+  /**
+   * @brief constructor to initialize the neural network
+   *
+   * initialize the neural network architecture based on the provide layer size,
+   * randomly initialize weights and biases for each layer using dynamic storage
+   *
+   * @param layer_size vector specifying number of neurons in each layer
+   *
+   * @throws std::invalid_argument if the number of layers is less than 2
+   */
   explicit NeuralNetwork(const std::vector<size_t>& layer_sizes)
       : layer_sizes_(layer_sizes) {
     // make sure only floating-point types are supported
@@ -54,12 +65,15 @@ class NeuralNetwork {
           layer_sizes[i + 1];  // number of neurons in the next layer
 
       // create weight tensor with shape [output_size, input_size]
-      std::vector<size_t>             weight_shape = {output_size, input_size};
-      tensor::Storage<T, tensor::CPU> layer_weights(weight_shape);
+      std::vector<size_t> weight_shape = {
+          output_size, input_size};  // neuron in the current layer
+      auto layer_weights = std::make_unique<tensor::DynamicStorage<T>>(
+          weight_shape);  // neuron in the next layer
 
       // create bias tensor with shape [output_size]
-      std::vector<size_t>             bias_shape = {output_size};
-      tensor::Storage<T, tensor::CPU> layer_biases(bias_shape);
+      std::vector<size_t> bias_shape = {output_size};
+      auto                layer_biases =
+          std::make_unique<tensor::DynamicStorage<T>>(bias_shape);
 
       // randomly initialize weights and biases between [-1, 1]
       std::random_device                rd;
@@ -67,18 +81,18 @@ class NeuralNetwork {
       std::uniform_real_distribution<T> dist(-1.0, 1.0);
 
       // initialize weights
-      for (size_t j = 0; j < layer_weights.size(); ++j) {
-        layer_weights[j] = dist(gen);
+      for (size_t j = 0; j < layer_weights->size(); ++j) {
+        (*layer_weights)[j] = dist(gen);
       }
 
       // initialize biases
-      for (size_t j = 0; j < layer_biases.size(); ++j) {
-        layer_biases[j] = dist(gen);
+      for (size_t j = 0; j < layer_biases->size(); ++j) {
+        (*layer_biases)[j] = dist(gen);
       }
 
       // store the initialized weights and biases
-      weights_.push_back(std::move(layer_weights));
-      biases_.push_back(std::move(layer_biases));
+      weights_.emplace_back(std::move(layer_weights));
+      biases_.emplace_back(std::move(layer_biases));
     }
   }
 
@@ -107,8 +121,8 @@ class NeuralNetwork {
     // iterating trough each layer
     for (size_t i = 0; i < weights_.size(); ++i) {
       const auto& layer_weights =
-          weights_[i];  // weight for for the current layer
-      const auto& layer_biases = biases_[i];  // biases for the current layer
+          *weights_[i];  // weight for for the current layer
+      const auto& layer_biases = *biases_[i];  // biases for the current layer
 
       // output this layer
       std::vector<T> next_layer_input(layer_biases.size());
@@ -150,10 +164,16 @@ class NeuralNetwork {
    */
   double compute_loss(const std::vector<T>& output,
                       const std::vector<T>& target) const {
+    // validating that output and target have the same size
+    if (output.size() != target.size()) {
+      throw std::invalid_argument(
+          "output and target vector must have the same size");
+    }
+
     // convert output and target vector to tensor
-    std::vector<size_t>             shape = {output.size()};
-    tensor::Storage<T, tensor::CPU> output_tensor(shape);
-    tensor::Storage<T, tensor::CPU> target_tensor(shape);
+    std::vector<size_t> shape = {output.size()};
+    auto output_tensor = std::make_unique<tensor::DynamicStorage<T>>(shape);
+    auto target_tensor = std::make_unique<tensor::DynamicStorage<T>>(shape);
 
     for (size_t i = 0; i < output.size(); ++i) {
       output_tensor[i] = output[i];
@@ -167,9 +187,9 @@ class NeuralNetwork {
  private:
   std::vector<size_t>
       layer_sizes_;  // size of each layer (input, hidden, output)
-  std::vector<tensor::Storage<T, tensor::CPU>>
+  std::vector<std::unique_ptr<tensor::DynamicStorage<T>>>
       weights_;  // weights for each layer (stored as tensors
-  std::vector<tensor::Storage<T, tensor::CPU>>
+  std::vector<std::unique_ptr<tensor::DynamicStorage<T>>>
       biases_;  // biases for each layer (stored as tensors)
 };
 }  // namespace neural
