@@ -72,4 +72,4 @@ for more example check on [example](example) folder.
 
 ## Tensor Storage With GPU process
 
-Enola currently support Tensor Storage processing by GPU with OpenCL (open computing language) for perform tensor storage and processing task, OpenCL is good for help for processing gpu, OpenCL provide APIs to manage memory on the GPU explicitly, so we can allocate memory buffer for tensors, for more information you can check [jere](https://www.khronos.org/opencl/) about OpenCL
+Enola currently support Tensor Storage processing by GPU with OpenCL (open computing language) for perform tensor storage and processing task, OpenCL is good for help for processing gpu, OpenCL provide APIs to manage memory on the GPU explicitly, so we can allocate memory buffer for tensors, for more information you can check [here](https://www.khronos.org/opencl/) about OpenCL
