@@ -1,7 +1,6 @@
 #ifndef FUNCTION_SIGMOID_HPP
 #define FUNCTION_SIGMOID_HPP
 
-#include "../math/exp.hpp"
 #include <algorithm>
 #include <cmath>
 #include <type_traits>
@@ -34,7 +33,7 @@ template <typename T>
     return T(0.0);
   }
 
-  return T(1.0) / (T(1.0) + enola::math::exp(-x));
+  return T(1.0) / (T(1.0) + std::exp(-x));
 }
 
 /**
