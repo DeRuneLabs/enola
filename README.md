@@ -2,7 +2,6 @@
 Library for perform some tensor operation for specific project, built with C++17
 
 currently including:
-- Neural Network
 - Function:
   - Sigmoid
   - Activation Function:
