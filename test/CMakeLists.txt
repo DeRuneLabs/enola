@@ -12,7 +12,8 @@ add_executable(
   tensor_view_test.cc
   tensor_ops_test.cc
   score_mae_test.cc
-  score_msle_test.cc)
+  score_msle_test.cc
+  util_common_test.cc)
 
 target_link_libraries(run_tests PRIVATE GTest::GTest GTest::Main)
 
@@ -43,7 +44,7 @@ endif()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL
                                            "Clang")
   target_compile_options(run_tests PRIVATE -Wno-non-template-friend
-                                           -Wno-unused-result)
+                                           -Wno-unused-result -Wno-return-type)
 endif()
 
 enable_testing()
