@@ -13,6 +13,7 @@ add_executable(
   tensor_ops_test.cc
   score_mae_test.cc
   score_msle_test.cc
+  math_vector_buff.cc
   util_common_test.cc)
 
 target_link_libraries(run_tests PRIVATE GTest::GTest GTest::Main)
