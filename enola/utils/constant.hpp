@@ -1,11 +1,13 @@
 #ifndef ENOLA_UTILS_CONSTANT_HPP
 #define ENOLA_UTILS_CONSTANT_HPP
 
-#include <cmath>
-
-// define `real` as floating-point type used throughout the engine
-// this will allow easy switching between float/double precision
+#ifdef ENOLA_LONG_DOUBLE_PRECISION
+using real = long double;
+#elif defined(ENOLA_FLOAT_PRECISION)
+using real = float;
+#else
 using real = double;
+#endif  // ENOLA_LONG_DOUBLE_PRECISION
 
 namespace enola {
 
@@ -63,6 +65,8 @@ constexpr real SQRTPI = 1.7725454;
  */
 constexpr real EULER = 2.718282;
 
+constexpr real LOGBASE2EULER = 1.44269504088896338700465;
+
 /**
  * @brief log base 10 of e
  *
@@ -115,6 +119,13 @@ constexpr real SQRT2 = 1.414213;
  * and in fast inverse square root approximation
  */
 constexpr real INVERSESQRT2 = 0.707106;
+
+/**
+ * @brief approximation tolerance
+ *
+ * used for tolerance for precision approx tolerance
+ */
+constexpr real APPROXIMATION_TOLERANCE = 0.000001;
 
 }  // namespace enola
 
