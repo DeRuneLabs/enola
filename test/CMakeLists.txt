@@ -13,7 +13,8 @@ add_executable(
   tensor_ops_test.cc
   score_mae_test.cc
   score_msle_test.cc
-  math_vector_buff.cc
+  math_vector_buff_test.cc
+  math_vector_test.cc
   math_polynomial_test.cc
   util_common_test.cc)
 
