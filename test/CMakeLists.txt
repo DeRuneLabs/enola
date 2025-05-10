@@ -14,6 +14,7 @@ add_executable(
   score_mae_test.cc
   score_msle_test.cc
   math_vector_buff.cc
+  math_polynomial_test.cc
   util_common_test.cc)
 
 target_link_libraries(run_tests PRIVATE GTest::GTest GTest::Main)
