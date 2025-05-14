@@ -2,7 +2,6 @@
 #define ENOLA_MATH_VECTOR_HPP
 
 #include "../utils/common.hpp"
-#include "vector_buff.hpp"
 #include <algorithm>
 #include <initializer_list>
 
@@ -169,6 +168,159 @@ class Vector {
    * @return real number representing the dot product
    */
   inline real operator*(const Vector<N>& other) const { return dot(other); }
+
+  /**
+   * @brief compute the cross product of this 3D vector with another
+   *
+   * if the dimension `N` is not 3, an empty Vector<3> is return
+   *
+   * @param other other 3D vector to compute the cross product with
+   * @return a new Vector<3> representing the cross product result
+   */
+  inline Vector<3> cross(const Vector<3>& other) const {
+    if (N != 3) {
+      return Vector<3>();
+    }
+
+    Vector<3> res;
+
+    res.data[0] = data[1] * other.data[2] - data[2] * other.data[1];
+    res.data[1] = data[2] * other.data[0] - data[0] * other.data[2];
+    res.data[2] = data[0] * other.data[1] - data[1] * other.data[0];
+
+    return res;
+  }
+
+  /**
+   * @brief add another vector component-wise to this vector
+   *
+   * @param other the vector to add
+   */
+  inline void operator+=(const Vector<N>& other) {
+    for (int i = 0; i < N; ++i) {
+      data[i] += other.data[i];
+    }
+  }
+
+  /**
+   * @brief subtract another vector component-wise from this vector
+   *
+   * @param other the vector to subtract
+   */
+  inline void operator-=(const Vector<N>& other) {
+    for (int i = 0; i < N; ++i) {
+      data[i] -= other.data[i];
+    }
+  }
+
+  /**
+   * @brief divide each component of the vector by scalar value
+   *
+   * @param scalar the scalar to divide by
+   */
+  inline void operator/=(real scalar) {
+    for (int i = 0; i < N; ++i) {
+      data[i] /= scalar;
+    }
+  }
+
+  /**
+   * @brief compute the magnitude (length) of the vector
+   *
+   * uses the euclid norm: sqrt(sum of square component)
+   *
+   * @return the magnitude of the vector
+   */
+  inline real magnitude() const {
+    real m = 0;
+    for (int i = 0; i < N; ++i) {
+      m += data[i] * data[i];
+    }
+    return enola::sqrt(m);
+  }
+
+  /**
+   * @brief convience alias for magnitude
+   *
+   * @return the length (magnitude) of the vector
+   */
+  inline real length() { return magnitude(); }
+
+  /**
+   * @brief compute the square of the magnitude without taking the square root
+   *
+   * useful for comparing length without needing to perform costly square root
+   *
+   * @return square of the magnitude
+   */
+  inline real square_magnitude() const {
+    real m = 0;
+    for (int i = 0; i < N; ++i) {
+      m += data[i] * data[i];
+    }
+    return m;
+  }
+
+  /**
+   * @brief convience alias for square_magnitude()
+   *
+   * @return square of the magnitude
+   */
+  inline real square_length() const { return square_magnitude(); }
+
+  /**
+   * @brief access the i-th component of the vector
+   *
+   * no bounds checking is performed
+   *
+   * @param i index of the component to access
+   * @return reference to the i-th component
+   */
+  inline real& operator[](int i) { return data[i]; }
+
+  /**
+   * @brief access the i-th component of the vector
+   *
+   * no bounds checking is performed
+   *
+   * @param i index of the component to access
+   * @return reference to the i-th component
+   */
+  inline real& at(int i) { return data[i]; }
+
+  /**
+   * @brief gets the i-th component of the vector (read-only)
+   *
+   * @param i index of the component
+   * @return value of the i-th component
+   */
+  inline real get(int i) const { return data[i]; }
+
+  /**
+   * @brief sets the i-th component of the vector
+   *
+   * @param i index of the component
+   * @param x new value for the component
+   */
+  inline void set(int i, real x) { data[i] = x; }
+
+  /**
+   * @brief normalize the vector to unit length
+   *
+   * if the vector magnitude is zero, normalization is skipped to avoid
+   * division by zero
+   */
+  inline void normalize() {
+    real m = magnitude();
+
+    if (m == 0) {
+      return;
+    }
+
+    for (int i = 0; i < N; ++i) {
+      data[i] /= m;
+    }
+  }
 };
 
 }  // namespace enola

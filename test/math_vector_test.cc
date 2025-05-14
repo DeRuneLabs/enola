@@ -89,3 +89,36 @@ TEST(VectorTest, DotProductOperator) {
 
   EXPECT_NEAR(result, expected, 1e-6);
 }
+
+TEST(VectorTest, OperatorPlusEqual) {
+  enola::Vector<2> v1;
+  v1.set(0, 1);
+  v1.set(1, 2);
+
+  enola::Vector<2> v2;
+  v2.set(0, 3);
+  v2.set(1, 4);
+
+  v1 += v2;
+
+  EXPECT_EQ(v1.get(0), 4);
+  EXPECT_EQ(v1.get(1), 6);
+}
+
+TEST(VectorTest, Magnitude) {
+  enola::Vector<2> vector_first;
+  vector_first.set(0, 3);
+  vector_first.set(1, 4);
+
+  EXPECT_FLOAT_EQ(vector_first.magnitude(), 5.0f);
+  EXPECT_FLOAT_EQ(vector_first.length(), 5.0f);
+}
+
+TEST(VectorTest, SquareMagnitude) {
+  enola::Vector<2> vector_magnitude;
+  vector_magnitude.set(0, 3);
+  vector_magnitude.set(1, 4);
+
+  EXPECT_EQ(vector_magnitude.square_magnitude(), 25);
+  EXPECT_EQ(vector_magnitude.square_length(), 25);
+}
